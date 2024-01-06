@@ -1,1 +1,0 @@
-# Hono backend app
