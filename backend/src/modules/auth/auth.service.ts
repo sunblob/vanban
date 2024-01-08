@@ -29,6 +29,7 @@ export class AuthService {
     const payload = {
       sub: user.id,
       email: user.email,
+      exp: Math.floor(Date.now() / 1000) + 60 * 60,
     };
 
     const token = sign(payload, process.env.JWT_SECRET, 'HS512');
@@ -49,6 +50,7 @@ export class AuthService {
     const payload = {
       sub: user.id,
       email: user.email,
+      exp: Math.floor(Date.now() / 1000) + 60 * 60,
     };
 
     const token = sign(payload, process.env.JWT_SECRET, 'HS512');
