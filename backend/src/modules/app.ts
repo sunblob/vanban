@@ -34,23 +34,14 @@ app.notFound((c) => {
 });
 
 app.onError((err, c) => {
-  console.log('Error: ', err);
+  let message = 'Internal server error';
+
   if (err instanceof HTTPException) {
-    return c.json(
-      {
-        message: err.message,
-      },
-      500
-    );
+    message = err.message;
   }
 
   if (err instanceof Prisma.PrismaClientValidationError) {
-    return c.json(
-      {
-        message: err.message,
-      },
-      500
-    );
+    message = err.message;
   }
 
   return c.json({ error: err.message }, 500);
