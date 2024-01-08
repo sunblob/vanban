@@ -22,9 +22,9 @@ boardRouter.get('/:id', async (c) => {
   return c.json(board);
 });
 
-boardRouter.post('/', auth(), zValidator('form', createBoardDto), async (c) => {
+boardRouter.post('/', auth(), zValidator('json', createBoardDto), async (c) => {
   const userId = getUser(c);
-  const data = c.req.valid('form');
+  const data = c.req.valid('json');
   const board = await BoardService.createBoard(userId, data);
 
   return c.json(board);
@@ -34,8 +34,6 @@ boardRouter.patch('/:id', auth(), zValidator('json', updateBoardDto), async (c) 
   const userId = getUser(c);
   const boardId = c.req.param('id');
   const data = c.req.valid('json');
-
-  console.log('data: ', data);
 
   const board = await BoardService.updateBoard(userId, boardId, data);
 

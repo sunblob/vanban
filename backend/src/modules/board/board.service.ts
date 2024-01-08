@@ -1,3 +1,4 @@
+import { HTTPException } from 'hono/http-exception';
 import { prisma } from '../../utils/db';
 import { CreateBoardDto, UpdateBoardDto } from './board.dto';
 
@@ -29,18 +30,21 @@ export class BoardService {
           },
         },
       },
+      include: {
+        lists: true,
+      },
     });
 
     if (!board) {
-      throw new Error('Board not found');
+      throw new HTTPException(404, {
+        message: 'Board not found',
+      });
     }
 
     return board;
   }
 
   static async createBoard(userId: string, { title }: CreateBoardDto) {
-    console.log('data: ', title);
-
     const board = await prisma.board.create({
       data: {
         title,
@@ -69,7 +73,9 @@ export class BoardService {
     });
 
     if (!board) {
-      throw new Error('Board not found');
+      throw new HTTPException(404, {
+        message: 'Board not found',
+      });
     }
 
     const updatedBoard = await prisma.board.update({
@@ -95,7 +101,9 @@ export class BoardService {
     });
 
     if (!board) {
-      throw new Error('Board not found');
+      throw new HTTPException(404, {
+        message: 'Board not found',
+      });
     }
 
     await prisma.board.delete({
