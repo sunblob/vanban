@@ -11,23 +11,42 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String?
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String      @id @default(uuid())
+  email        String      @unique
+  name         String?
+  password     String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  boards       UserBoard[]
+  authorBoards Board[]
+
+  @@map("users")
 }
 
 model Board {
-  id           String   @id @default(uuid())
+  id           String      @id @default(uuid())
   title        String
   fullImage    String?
   previewImage String?
-  isClosed     Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  isClosed     Boolean     @default(false)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
   lists        List[]
+  users        UserBoard[]
+  author       User        @relation(fields: [authorId], references: [id])
+  authorId     String
+
+  @@map("boards")
+}
+
+model UserBoard {
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId String
+
+  @@id([userId, boardId])
+  @@map("user_boards")
 }
 
 model List {
@@ -41,6 +60,7 @@ model List {
   cards     Card[]
 
   @@index([boardId])
+  @@map("lists")
 }
 
 model Card {
@@ -53,6 +73,8 @@ model Card {
   updatedAt   DateTime @updatedAt
   list        List     @relation(fields: [listId], references: [id])
   listId      String
+
+  @@map("cards")
 }
 
 model Log {
@@ -63,6 +85,8 @@ model Log {
   userId     String
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+
+  @@map("logs")
 }
 
 enum ACTION {

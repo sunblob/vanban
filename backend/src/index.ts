@@ -1,7 +1,7 @@
 import { serve } from '@hono/node-server';
 import { app } from './modules/app';
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 function bootstrap() {
   console.log(`Server is running on port ${port}`);

@@ -1,8 +1,11 @@
 import { Hono } from 'hono';
+import { auth, getUser } from '../../middlewares/auth';
 
 export const listRouter = new Hono();
 
-listRouter.get('/', (c) => {
+listRouter.get('/', auth(), async (c) => {
+  const userId = getUser(c);
+
   return c.json({});
 });
 

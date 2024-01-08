@@ -9,19 +9,24 @@ import 'dotenv/config';
 // routes
 import { authRouter } from './auth';
 import { boardRouter } from './board';
+import { auth, getUser } from '../middlewares/auth';
+import { Prisma } from '@prisma/client';
 
 const app = new Hono();
 
-app.use('*', logger());
-app.use('/api/*', cors());
+app.use('*', logger(), cors());
 
 app.route('/api/auth', authRouter);
 app.route('/api/boards', boardRouter);
 
-app.get('/env', (c) => {
-  const { PORT } = env<{ PORT: number }>(c);
+app.get('/env', auth, (c) => {
+  const { PORT, JWT_SECRET } = env<{ PORT: number; JWT_SECRET: string }>(c);
 
-  return c.json({ PORT });
+  const userId = getUser(c);
+
+  console.log('userId: ', userId);
+
+  return c.json({ PORT, JWT_SECRET });
 });
 
 app.notFound((c) => {
@@ -29,8 +34,23 @@ app.notFound((c) => {
 });
 
 app.onError((err, c) => {
+  console.log('Error: ', err);
   if (err instanceof HTTPException) {
-    return err.getResponse();
+    return c.json(
+      {
+        message: err.message,
+      },
+      500
+    );
+  }
+
+  if (err instanceof Prisma.PrismaClientValidationError) {
+    return c.json(
+      {
+        message: err.message,
+      },
+      500
+    );
   }
 
   return c.json({ error: err.message }, 500);
