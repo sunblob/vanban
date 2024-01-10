@@ -1,5 +1,11 @@
 import { z } from 'zod';
 
+export const getListsDto = z.object({
+  boardId: z.string().uuid().optional(),
+});
+
+export type GetListsDto = z.infer<typeof getListsDto>;
+
 export const createListDto = z.object({
   title: z.string().min(1).max(255),
   position: z.number().int().positive(),

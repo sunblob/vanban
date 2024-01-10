@@ -11,6 +11,7 @@ import { authRouter } from './auth';
 import { boardRouter } from './board';
 import { auth, getUser } from '../middlewares/auth';
 import { Prisma } from '@prisma/client';
+import { listRouter } from './list/list.routes';
 
 const app = new Hono();
 
@@ -18,6 +19,7 @@ app.use('*', logger(), cors());
 
 app.route('/api/auth', authRouter);
 app.route('/api/boards', boardRouter);
+app.route('/api/lists', listRouter);
 
 app.get('/env', auth, (c) => {
   const { PORT, JWT_SECRET } = env<{ PORT: number; JWT_SECRET: string }>(c);
