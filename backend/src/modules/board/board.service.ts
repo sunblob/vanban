@@ -31,7 +31,11 @@ export class BoardService {
         },
       },
       include: {
-        lists: true,
+        lists: {
+          include: {
+            cards: true,
+          },
+        },
       },
     });
 
@@ -64,11 +68,7 @@ export class BoardService {
     const board = await prisma.board.findFirst({
       where: {
         id: boardId,
-        users: {
-          some: {
-            userId,
-          },
-        },
+        authorId: userId,
       },
     });
 
@@ -92,11 +92,7 @@ export class BoardService {
     const board = await prisma.board.findFirst({
       where: {
         id: boardId,
-        users: {
-          some: {
-            userId,
-          },
-        },
+        authorId: userId,
       },
     });
 

@@ -19,6 +19,7 @@ model User {
   updatedAt    DateTime    @updatedAt
   boards       UserBoard[]
   authorBoards Board[]
+  authorCards  Card[]
 
   @@map("users")
 }
@@ -33,7 +34,7 @@ model Board {
   updatedAt    DateTime    @updatedAt
   lists        List[]
   users        UserBoard[]
-  author       User        @relation(fields: [authorId], references: [id])
+  author       User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId     String
 
   @@map("boards")
@@ -55,7 +56,7 @@ model List {
   position  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  board     Board    @relation(fields: [boardId], references: [id])
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
   boardId   String
   cards     Card[]
 
@@ -71,8 +72,10 @@ model Card {
   tags        TAG[]    @default([])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  list        List     @relation(fields: [listId], references: [id])
+  list        List     @relation(fields: [listId], references: [id], onDelete: Cascade)
   listId      String
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    String
 
   @@map("cards")
 }

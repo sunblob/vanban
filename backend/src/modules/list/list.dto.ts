@@ -14,3 +14,10 @@ export const updateListDto = z.object({
 });
 
 export type UpdateListDto = z.infer<typeof updateListDto>;
+
+export const updateListPositionDto = z.object({
+  newPosition: z.number().int().positive(),
+  boardId: z.string().uuid(),
+});
+
+export type UpdateListPositionDto = z.infer<typeof updateListPositionDto>;

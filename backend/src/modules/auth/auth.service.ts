@@ -1,6 +1,6 @@
 import { HTTPException } from 'hono/http-exception';
 import * as argon from 'argon2';
-import { decode, sign, verify } from 'hono/jwt';
+import { sign } from 'hono/jwt';
 import { prisma } from '../../utils/db';
 import { AuthDto } from './auth.dto';
 
