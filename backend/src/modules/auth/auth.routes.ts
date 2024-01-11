@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { authDto } from './auth.dto';
 import { AuthService } from './auth.service';
-import { auth } from '../../middlewares/auth';
+import { auth } from '@/middlewares/auth';
 
 export const authRouter = new Hono();
 

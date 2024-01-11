@@ -1,7 +1,7 @@
 import { HTTPException } from 'hono/http-exception';
-import { prisma } from '../../utils/db';
+import { prisma } from '@/utils/db';
 import { CreateCardDto, GetCardsDto, UpdateCardDto, UpdateCardPositionDto } from './card.dto';
-import { LogsService } from '../logs/logs.service';
+import { LogsService } from '../logs';
 
 export class CardService {
   static async getCards({ listId, boardId }: GetCardsDto) {

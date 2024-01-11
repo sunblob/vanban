@@ -1,7 +1,7 @@
 import { HTTPException } from 'hono/http-exception';
-import * as argon from 'argon2';
 import { sign } from 'hono/jwt';
-import { prisma } from '../../utils/db';
+import * as argon from 'argon2';
+import { prisma } from '@/utils/db';
 import { AuthDto } from './auth.dto';
 
 export class AuthService {

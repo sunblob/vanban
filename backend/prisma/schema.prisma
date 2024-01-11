@@ -95,6 +95,7 @@ model Log {
 enum ACTION {
   CREATE
   UPDATE
+  MOVE
   DELETE
 }
 

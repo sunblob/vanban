@@ -1,5 +1,5 @@
-import { ACTION, ENTITY_TYPE } from '@prisma/client';
 import { z } from 'zod';
+import { ACTION, ENTITY_TYPE } from '@prisma/client';
 
 export const getLogsDto = z.object({
   entityId: z.string().uuid().optional(),

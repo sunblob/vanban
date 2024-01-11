@@ -1,5 +1,5 @@
 import { HTTPException } from 'hono/http-exception';
-import { prisma } from '../../utils/db';
+import { prisma } from '@/utils/db';
 import { CreateLogDto, GetLogsDto, UpdateLogDto } from './logs.dto';
 
 export class LogsService {

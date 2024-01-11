@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { auth, getUser } from '../../middlewares/auth';
+import { auth, getUser } from '@/middlewares/auth';
 import { BoardService } from './board.service';
 import { zValidator } from '@hono/zod-validator';
 import { createBoardDto, updateBoardDto } from './board.dto';

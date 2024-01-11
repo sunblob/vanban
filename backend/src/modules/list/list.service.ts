@@ -1,7 +1,7 @@
 import { HTTPException } from 'hono/http-exception';
-import { prisma } from '../../utils/db';
+import { prisma } from '@/utils/db';
 import { CreateListDto, GetListsDto, UpdateListDto, UpdateListPositionDto } from './list.dto';
-import { LogsService } from '../logs/logs.service';
+import { LogsService } from '../logs';
 
 export class ListService {
   static async getLists(userId: string, { boardId }: GetListsDto) {

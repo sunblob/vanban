@@ -4,16 +4,16 @@ import { logger } from 'hono/logger';
 import { HTTPException } from 'hono/http-exception';
 import { showRoutes } from 'hono/dev';
 import { env } from 'hono/adapter';
+import { Prisma } from '@prisma/client';
 import 'dotenv/config';
 
 // routes
 import { authRouter } from './auth';
 import { boardRouter } from './board';
-import { auth, getUser } from '../middlewares/auth';
-import { Prisma } from '@prisma/client';
-import { listRouter } from './list/list.routes';
-import { cardRouter } from './card/card.routes';
+import { listRouter } from './list';
+import { cardRouter } from './card';
 import { logsRouter } from './logs';
+import { auth, getUser } from '../middlewares/auth';
 
 const app = new Hono();
 

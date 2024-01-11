@@ -1,5 +1,5 @@
 import { HTTPException } from 'hono/http-exception';
-import { prisma } from '../../utils/db';
+import { prisma } from '@/utils/db';
 import { CreateBoardDto, UpdateBoardDto } from './board.dto';
 
 export class BoardService {

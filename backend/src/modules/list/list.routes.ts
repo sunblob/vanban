@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
-import { auth, getUser } from '../../middlewares/auth';
 import { zValidator } from '@hono/zod-validator';
+import { auth, getUser } from '@/middlewares/auth';
 import { createListDto, getListsDto, updateListDto, updateListPositionDto } from './list.dto';
 import { ListService } from './list.service';
 
@@ -11,7 +11,7 @@ listRouter.get('/', zValidator('query', getListsDto), auth(), async (c) => {
   const data = c.req.valid('query');
   const lists = await ListService.getLists(userId, data);
 
-  return c.json({ lists });
+  return c.json(lists);
 });
 
 listRouter.get('/:id', auth(), async (c) => {
@@ -19,7 +19,7 @@ listRouter.get('/:id', auth(), async (c) => {
   const listId = c.req.param('id');
   const list = await ListService.getList(userId, listId);
 
-  return c.json({ list });
+  return c.json(list);
 });
 
 listRouter.post('/', auth(), zValidator('json', createListDto), async (c) => {
@@ -27,7 +27,7 @@ listRouter.post('/', auth(), zValidator('json', createListDto), async (c) => {
   const data = c.req.valid('json');
   const list = await ListService.createList(userId, data);
 
-  return c.json({ list });
+  return c.json(list);
 });
 
 listRouter.patch('/:id', auth(), zValidator('json', updateListDto), async (c) => {
@@ -36,7 +36,7 @@ listRouter.patch('/:id', auth(), zValidator('json', updateListDto), async (c) =>
   const data = c.req.valid('json');
   const list = await ListService.updateList(userId, listId, data);
 
-  return c.json({ list });
+  return c.json(list);
 });
 
 listRouter.delete('/:id', auth(), async (c) => {
@@ -44,7 +44,7 @@ listRouter.delete('/:id', auth(), async (c) => {
   const listId = c.req.param('id');
   const list = await ListService.deleteList(userId, listId);
 
-  return c.json({ result: list });
+  return c.json(list);
 });
 
 listRouter.patch('/:id/reorder', auth(), zValidator('json', updateListPositionDto), async (c) => {
