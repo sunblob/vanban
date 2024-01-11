@@ -16,11 +16,11 @@
       v-if="!isAddingColumn"
       role="button"
       @click="addColumn"
-      class="w-[276px] shrink-0 text-blue-950 bg-blue-300 text-lg rounded-md p-2"
+      class="w-[326px] shrink-0 text-blue-950 bg-blue-300 text-lg rounded-md p-2"
     >
       + Add column
     </div>
-    <div v-else class="flex flex-col gap-y-1 w-[276px] shrink-0 bg-gray-800 rounded-md p-2">
+    <div v-else class="flex flex-col gap-y-4 w-[326px] shrink-0 bg-gray-800 rounded-md p-2">
       <input
         type="text"
         v-model="newColumn"
@@ -29,11 +29,9 @@
       />
       <div class="flex gap-x-2 items-center">
         <v-button variant="primary">Add column</v-button>
-        <x-icon
-          :size="20"
-          class="text-neutral-300 cursor-pointer hover:bg-gray-700 rounded"
-          @click="isAddingColumn = false"
-        />
+        <div class="flex items-center justify-center p-2 cursor-pointer hover:bg-gray-700 rounded">
+          <x-icon :size="24" class="text-neutral-300" @click="isAddingColumn = false" />
+        </div>
       </div>
     </div>
   </div>

@@ -1,5 +1,7 @@
 <template>
-  <div class="flex flex-col shrink-0 p-4 py-3 bg-gray-800 rounded-md w-[276px] cursor-pointer">
+  <div
+    class="flex flex-col gap-y-2 shrink-0 p-4 py-3 bg-gray-800 rounded-md w-[326px] cursor-pointer"
+  >
     <div class="flex justify-between items-center gap-x-2 mb-2">
       <h2
         v-if="!isEditing"
@@ -28,6 +30,7 @@
       item-key="id"
       class="flex flex-col gap-y-2"
       :animation="250"
+      @change="test"
     >
       <template #item="{ element: task }: { element: Task }">
         <li>
@@ -38,12 +41,12 @@
     <div
       v-if="!isAddingTask"
       role="button"
-      class="mt-2 text-gray-300 hover:bg-neutral-600/30 rounded-md p-2"
+      class="text-gray-300 hover:bg-neutral-600/30 rounded-md p-2"
       @click="addTask"
     >
       + Add task
     </div>
-    <div v-else class="mt-2 flex flex-col gap-y-2">
+    <div v-else class="flex flex-col gap-y-2">
       <input
         ref="newTask"
         type="text"
@@ -103,6 +106,7 @@ export default defineComponent({
     addTask() {
       this.isAddingTask = true;
 
+      // next tick because otherwise ref is undefined
       this.$nextTick(() => {
         (this.$refs['newTask'] as HTMLInputElement).focus();
       });
@@ -160,6 +164,10 @@ export default defineComponent({
     cancel() {
       this.isAddingTask = false;
       this.taskTitle = '';
+    },
+
+    test() {
+      console.log(this.column.tasks);
     },
 
     ...mapActions(useBoardStore, ['updateColumn', 'createTask', 'updateTask']),
