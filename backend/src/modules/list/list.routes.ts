@@ -31,16 +31,18 @@ listRouter.post('/', auth(), zValidator('json', createListDto), async (c) => {
 });
 
 listRouter.patch('/:id', auth(), zValidator('json', updateListDto), async (c) => {
+  const userId = getUser(c);
   const listId = c.req.param('id');
   const data = c.req.valid('json');
-  const list = await ListService.updateList(listId, data);
+  const list = await ListService.updateList(userId, listId, data);
 
   return c.json({ list });
 });
 
 listRouter.delete('/:id', auth(), async (c) => {
+  const userId = getUser(c);
   const listId = c.req.param('id');
-  const list = await ListService.deleteList(listId);
+  const list = await ListService.deleteList(userId, listId);
 
   return c.json({ result: list });
 });

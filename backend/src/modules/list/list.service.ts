@@ -1,6 +1,7 @@
 import { HTTPException } from 'hono/http-exception';
 import { prisma } from '../../utils/db';
 import { CreateListDto, GetListsDto, UpdateListDto, UpdateListPositionDto } from './list.dto';
+import { LogsService } from '../logs/logs.service';
 
 export class ListService {
   static async getLists(userId: string, { boardId }: GetListsDto) {
@@ -55,10 +56,17 @@ export class ListService {
       },
     });
 
+    // create list log
+    await LogsService.createLog(userId, {
+      entityId: list.id,
+      entityType: 'LIST',
+      action: 'CREATE',
+    });
+
     return list;
   }
 
-  static async updateList(listId: string, { title }: UpdateListDto) {
+  static async updateList(userId: string, listId: string, { title }: UpdateListDto) {
     const list = await prisma.list.update({
       where: {
         id: listId,
@@ -68,14 +76,28 @@ export class ListService {
       },
     });
 
+    // update list log
+    await LogsService.createLog(userId, {
+      entityId: list.id,
+      entityType: 'LIST',
+      action: 'UPDATE',
+    });
+
     return list;
   }
 
-  static async deleteList(listId: string) {
+  static async deleteList(userId: string, listId: string) {
     const list = await prisma.list.delete({
       where: {
         id: listId,
       },
+    });
+
+    // delete list log
+    await LogsService.createLog(userId, {
+      entityId: list.id,
+      entityType: 'LIST',
+      action: 'DELETE',
     });
 
     return list;

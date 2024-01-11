@@ -1,6 +1,7 @@
 import { HTTPException } from 'hono/http-exception';
 import { prisma } from '../../utils/db';
 import { CreateCardDto, GetCardsDto, UpdateCardDto, UpdateCardPositionDto } from './card.dto';
+import { LogsService } from '../logs/logs.service';
 
 export class CardService {
   static async getCards({ listId, boardId }: GetCardsDto) {
@@ -45,6 +46,13 @@ export class CardService {
       },
     });
 
+    // create card log
+    await LogsService.createLog(userId, {
+      entityId: card.id,
+      entityType: 'CARD',
+      action: 'CREATE',
+    });
+
     return card;
   }
 
@@ -61,6 +69,13 @@ export class CardService {
       },
     });
 
+    // update card log
+    await LogsService.createLog(userId, {
+      entityId: cardId,
+      entityType: 'CARD',
+      action: 'UPDATE',
+    });
+
     return card;
   }
 
@@ -69,6 +84,13 @@ export class CardService {
       where: {
         id: cardId,
       },
+    });
+
+    // delete card log
+    await LogsService.createLog(userId, {
+      entityId: cardId,
+      entityType: 'CARD',
+      action: 'DELETE',
     });
 
     return card;
