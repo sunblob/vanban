@@ -200,6 +200,12 @@ export class CardService {
       },
     });
 
+    await LogsService.createLog(userId, {
+      entityId: cardId,
+      entityType: 'CARD',
+      action: 'MOVE',
+    });
+
     return {
       message: 'Card reordered',
     };

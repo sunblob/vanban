@@ -126,7 +126,7 @@ export class ListService {
     return list;
   }
 
-  static async reorderList(listId: string, { newPosition, boardId }: UpdateListPositionDto) {
+  static async reorderList(userId: string, listId: string, { newPosition, boardId }: UpdateListPositionDto) {
     const list = await prisma.list.findFirst({
       where: {
         id: listId,
@@ -187,6 +187,12 @@ export class ListService {
       data: {
         position: newPosition,
       },
+    });
+
+    await LogsService.createLog(userId, {
+      entityId: listId,
+      entityType: 'CARD',
+      action: 'MOVE',
     });
 
     return {

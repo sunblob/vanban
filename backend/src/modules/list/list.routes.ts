@@ -48,9 +48,10 @@ listRouter.delete('/:id', auth(), async (c) => {
 });
 
 listRouter.patch('/:id/reorder', auth(), zValidator('json', updateListPositionDto), async (c) => {
+  const userId = getUser(c);
   const data = c.req.valid('json');
   const listId = c.req.param('id');
-  const result = await ListService.reorderList(listId, data);
+  const result = await ListService.reorderList(userId, listId, data);
 
   return c.json(result);
 });
