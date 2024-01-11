@@ -16,6 +16,13 @@ export class ListService {
           },
         },
       },
+      include: {
+        cards: {
+          orderBy: {
+            position: 'asc',
+          },
+        },
+      },
       orderBy: {
         position: 'asc',
       },
@@ -66,13 +73,14 @@ export class ListService {
     return list;
   }
 
-  static async updateList(userId: string, listId: string, { title }: UpdateListDto) {
+  static async updateList(userId: string, listId: string, { title, position }: UpdateListDto) {
     const list = await prisma.list.update({
       where: {
         id: listId,
       },
       data: {
         title,
+        position,
       },
     });
 
@@ -90,6 +98,21 @@ export class ListService {
     const list = await prisma.list.delete({
       where: {
         id: listId,
+      },
+    });
+
+    // update other lists position on delete
+    await prisma.list.updateMany({
+      where: {
+        boardId: list.boardId,
+        position: {
+          gt: list.position,
+        },
+      },
+      data: {
+        position: {
+          decrement: 1,
+        },
       },
     });
 
@@ -136,7 +159,7 @@ export class ListService {
         },
         data: {
           position: {
-            increment: 1,
+            decrement: 1,
           },
         },
       });
@@ -151,7 +174,7 @@ export class ListService {
         },
         data: {
           position: {
-            decrement: 1,
+            increment: 1,
           },
         },
       });
