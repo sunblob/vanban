@@ -103,6 +103,8 @@ export default defineComponent({
     validatePassword() {
       if (!this.form.password && !this.form.password.trim().length) {
         this.errors.password = 'Password is required';
+      } else if (this.form.password.trim().length < 6) {
+        this.errors.password = 'Password must be at least 6 characters';
       } else {
         this.errors.password = '';
       }
