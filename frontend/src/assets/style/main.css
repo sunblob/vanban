@@ -11,7 +11,7 @@
   }
 
   #app {
-    @apply h-full overflow-hidden;
+    @apply h-full flex flex-col;
   }
 
   body.overflow {
