@@ -8,7 +8,7 @@
       :animation="250"
       item-key="id"
     >
-      <template #item="{ element: column }: { element: Column }">
+      <template #item="{ element: column }: { element: List }">
         <vanban-board-column :column="column"> </vanban-board-column>
       </template>
     </draggable>
@@ -49,7 +49,7 @@ import VanbanBoardColumn from './vanban-board-column.vue';
 import VanbanBoardHeader from './vanban-board-header.vue';
 import VButton from './ui/v-button.vue';
 
-import type { Column, Task, ID } from '@/types';
+import type { List, Card, ID } from '@/types';
 
 export default defineComponent({
   name: 'vanban-board',
@@ -73,7 +73,7 @@ export default defineComponent({
   },
 
   methods: {
-    onDragTask(task: Task) {
+    onDragTask(task: Card) {
       this.activeDragTask = task.id;
     },
     onDragEnd() {

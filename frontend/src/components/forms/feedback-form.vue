@@ -1,5 +1,7 @@
 <template>
-  <div>Auth page</div>
+  <div>
+    <form action=""></form>
+  </div>
 </template>
 
 <script lang="ts">

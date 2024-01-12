@@ -32,7 +32,7 @@
       :animation="250"
       @change="test"
     >
-      <template #item="{ element: task }: { element: Task }">
+      <template #item="{ element: task }: { element: Card }">
         <li>
           <vanban-board-card :task="task" @update-title="updateTaskTitle" />
         </li>
@@ -72,7 +72,7 @@ import { useBoardStore } from '@/stores/board';
 
 import VanbanBoardCard from './vanban-board-card.vue';
 
-import type { Column, Task } from '@/types';
+import type { List, Card } from '@/types';
 
 export default defineComponent({
   name: 'vanban-board-column',
@@ -87,7 +87,7 @@ export default defineComponent({
 
   props: {
     column: {
-      type: Object as PropType<Column>,
+      type: Object as PropType<List>,
       required: true,
     },
   },

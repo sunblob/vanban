@@ -68,7 +68,7 @@ import { useBoardStore } from '@/stores/board';
 import VModal from '@/components/ui/modal/v-modal.vue';
 import VButton from './ui/v-button.vue';
 
-import type { Task } from '@/types';
+import type { Card } from '@/types';
 
 export default defineComponent({
   name: 'vanban-board-task',
@@ -77,7 +77,7 @@ export default defineComponent({
 
   props: {
     task: {
-      type: Object as PropType<Task>,
+      type: Object as PropType<Card>,
       required: true,
     },
   },

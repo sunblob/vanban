@@ -1,78 +1,98 @@
 import type { Board, ID } from '@/types';
+import axios from 'axios';
 import { defineStore } from 'pinia';
+import { toast } from 'vue-sonner';
+import { useAuth } from './auth';
+
+interface Store {
+  boards: Board[];
+}
 
 export const useBoardStore = defineStore('board', {
-  state: (): Board => ({
-    id: '123',
-    title: 'Board test#1',
-    columns: [
-      {
-        id: '34543543',
-        title: 'To Do',
-        tasks: [
-          {
-            id: '34352',
-            title: 'Create a new Vue Project',
-            tags: [],
-          },
-          {
-            id: '413123',
-            title: 'Start working on a vanban',
-            tags: [],
-          },
-        ],
-      },
-      {
-        id: '5353',
-        title: 'In progress',
-        tasks: [],
-      },
-      {
-        id: '4388835',
-        title: 'QA',
-        tasks: [],
-      },
-      {
-        id: '5543252',
-        title: 'Completed',
-        tasks: [],
-      },
-    ],
+  state: (): Store => ({
+    boards: [],
   }),
+
   actions: {
-    getColumnById(id: ID) {
-      return this.columns.find((c) => c.id === id);
-    },
+    async getBoards() {
+      try {
+        const { data } = await axios.get<Board[]>('http://localhost:3000/api/boards', {
+          headers: {
+            Authorization: useAuth().token,
+          },
+        });
 
-    getTaskById(columnId: ID, id: ID) {
-      const col = this.getColumnById(columnId);
-
-      if (col) {
-        return col.tasks.find((t) => t.id === id);
+        this.boards = data;
+      } catch (error) {
+        console.log('Error: ', error);
+        toast.error('Error getting boards');
       }
     },
 
-    updateColumn({ id, title }: { id: ID; title: string }) {
-      const col = this.getColumnById(id);
+    async createBoard({ title, image }: { title: string; image?: string }) {
+      try {
+        const { data } = await axios.post<Board>(
+          'http://localhost:3000/api/boards',
+          {
+            title,
+          },
+          {
+            headers: {
+              Authorization: useAuth().token,
+            },
+          },
+        );
 
-      if (col) {
-        col.title = title;
+        this.boards.push(data);
+        toast.success('Board created');
+      } catch (error) {
+        console.log('Error: ', error);
+        toast.error('Error creating board');
       }
     },
 
-    createTask({ columnId, title }: { columnId: ID; title: string }) {
-      const col = this.getColumnById(columnId);
+    async updateBoard({ boardId, title, image }: { boardId: ID; title: string; image?: string }) {
+      try {
+        const { data } = await axios.put<Board>(
+          `http://localhost:3000/api/boards/${boardId}`,
+          {
+            title,
+          },
+          {
+            headers: {
+              Authorization: useAuth().token,
+            },
+          },
+        );
 
-      if (col) {
-        col.tasks.push({ id: `${Date.now()}`, title, tags: [] });
+        this.boards = this.boards.map((board) => {
+          if (board.id === boardId) {
+            return data;
+          }
+
+          return board;
+        });
+
+        toast.success('Board updated');
+      } catch (error) {
+        console.log('Error: ', error);
+        toast.error('Error updating board');
       }
     },
 
-    updateTask({ columnId, taskTitle, taskId }: { columnId: ID; taskTitle: string; taskId: ID }) {
-      const task = this.getTaskById(columnId, taskId);
+    async deleteBoard(boardId: ID) {
+      try {
+        await axios.delete(`http://localhost:3000/api/boards/${boardId}`, {
+          headers: {
+            Authorization: useAuth().token,
+          },
+        });
 
-      if (task) {
-        task.title = taskTitle;
+        this.boards = this.boards.filter((board) => board.id !== boardId);
+        toast.success('Board deleted');
+      } catch (error) {
+        console.log('Error: ', error);
+        toast.error('Error deleting board');
       }
     },
   },

@@ -1,16 +1,29 @@
 <template>
   <div class="h-full">
-    <vanban-board />
+    <div v-for="board in boards" :key="board.id">
+      {{ board.title }}
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import VanbanBoard from '@/components/vanban-board.vue';
 import { defineComponent } from 'vue';
+import { mapActions, mapState } from 'pinia';
+import { useBoardStore } from '@/stores/board';
 
 export default defineComponent({
-  components: {
-    VanbanBoard,
+  components: {},
+
+  computed: {
+    ...mapState(useBoardStore, ['boards']),
+  },
+
+  methods: {
+    ...mapActions(useBoardStore, ['getBoards']),
+  },
+
+  mounted() {
+    this.getBoards();
   },
 });
 </script>

@@ -7,8 +7,11 @@ export interface Workspace {
 export interface Board {
   id: ID;
   title: string;
-  columns: Column[];
+  fullImage?: String;
+  previewImage?: String;
+  authorId: string;
   isClosed?: false;
+  lists: List[];
 }
 
 export interface Activity {
@@ -16,20 +19,24 @@ export interface Activity {
   author: string;
 }
 
-export interface Column {
+export interface List {
   id: ID;
   title: string;
-  tasks: Task[];
+  position: number;
+  boardId: ID;
+  tasks: Card[];
 }
 
-export interface Task {
+export interface Card {
   id: ID;
   title: string;
+  description?: string;
+  position: number;
   tags?: Tag[];
-  endsAt?: Date;
-  participants?: string[];
+  authorId: ID;
+  listId: ID;
 }
 
-type Tag = 'story' | 'task' | 'bug';
+type Tag = 'TASK' | 'BUG' | 'OTHER';
 
 export type ID = string | number;

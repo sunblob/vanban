@@ -10,6 +10,8 @@
       'h-10 px-4 py-2': size === 'default',
       'h-9 rounded-md px-3': size === 'sm',
       'h-11 rounded-md px-8': size === 'lg',
+
+      'w-full': fullWidth,
     }"
   >
     <slot></slot>
@@ -34,6 +36,11 @@ export default defineComponent({
     size: {
       type: String as PropType<Sizes>,
       default: 'default',
+    },
+
+    fullWidth: {
+      type: Boolean,
+      default: false,
     },
   },
 });

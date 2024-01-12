@@ -13,7 +13,12 @@ const router = createRouter({
     {
       path: '/sign-in',
       name: 'sign-in',
-      component: () => import('@/views/auth-page.vue'),
+      component: () => import('@/views/sign-in-page.vue'),
+    },
+    {
+      path: '/sign-up',
+      name: 'sign-up',
+      component: () => import('@/views/sign-up-page.vue'),
     },
     {
       path: '/boards',
@@ -31,7 +36,7 @@ const router = createRouter({
 router.beforeEach((to, from) => {
   const { isLoggedIn } = useAuth();
 
-  if (!isLoggedIn && to.name != 'sign-in' && to.name != 'home') {
+  if (!isLoggedIn && to.name != 'sign-in' && to.name != 'home' && to.name != 'sign-up') {
     return { name: 'sign-in' };
   }
 });
