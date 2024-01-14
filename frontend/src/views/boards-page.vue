@@ -1,8 +1,7 @@
 <template>
-  <div class="h-full">
-    <div v-for="board in boards" :key="board.id">
-      {{ board.title }}
-    </div>
+  <div class="h-full p-4">
+    <h1 class="text-4xl mb-4 font-semibold">Your boards</h1>
+    <board-item-list :boards="boards" />
   </div>
 </template>
 
@@ -10,9 +9,12 @@
 import { defineComponent } from 'vue';
 import { mapActions, mapState } from 'pinia';
 import { useBoardStore } from '@/stores/board';
+import BoardItemList from '@/components/board-item-list.vue';
 
 export default defineComponent({
-  components: {},
+  components: {
+    BoardItemList,
+  },
 
   computed: {
     ...mapState(useBoardStore, ['boards']),

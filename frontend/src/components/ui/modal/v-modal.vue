@@ -2,7 +2,7 @@
   <teleport :to="to">
     <transition name="fade">
       <div
-        v-if="modelValue"
+        v-if="isOpen"
         class="fixed top-0 left-0 w-full h-full flex items-center justify-center"
         :class="{
           'backdrop-blur-sm': blur,
@@ -23,7 +23,7 @@ export default defineComponent({
   name: 'v-modal',
 
   props: {
-    modelValue: {
+    isOpen: {
       type: Boolean,
       default: false,
     },
@@ -45,20 +45,20 @@ export default defineComponent({
     },
   },
 
-  emits: ['update:modelValue'],
+  emits: ['close'],
 
   methods: {
     closeModal() {
-      this.$emit('update:modelValue', false);
+      this.$emit('close');
     },
 
     handleEsc(event: KeyboardEvent) {
-      if (!this.modelValue) {
+      if (!this.isOpen) {
         return;
       }
 
       if (event.key === 'Escape') {
-        this.$emit('update:modelValue', false);
+        this.$emit('close');
       }
     },
   },
@@ -76,7 +76,7 @@ export default defineComponent({
   },
 
   watch: {
-    modelValue(value: boolean) {
+    isOpen(value: boolean) {
       if (value) {
         document.body.classList.add('overflow');
       } else {

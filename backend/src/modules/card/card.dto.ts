@@ -3,7 +3,7 @@ import { TAG } from '@prisma/client';
 
 export const createCardDto = z.object({
   title: z.string().min(1).max(255),
-  position: z.number().int().positive(),
+  position: z.number().int().min(0),
   listId: z.string().uuid(),
 });
 
@@ -14,13 +14,13 @@ export const updateCardDto = z.object({
   description: z.string().min(1).max(255).optional(),
   listId: z.string().uuid().optional(),
   tags: z.array(z.nativeEnum(TAG)).optional(),
-  position: z.number().int().positive().optional(),
+  position: z.number().int().min(0).optional(),
 });
 
 export type UpdateCardDto = z.infer<typeof updateCardDto>;
 
 export const updateCardPositionDto = z.object({
-  newPosition: z.number().int().positive(),
+  newPosition: z.number().int().min(0),
   listId: z.string().uuid(),
   newListId: z.string().uuid().optional(),
 });

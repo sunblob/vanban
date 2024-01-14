@@ -32,9 +32,12 @@ export class AuthService {
       exp: Math.floor(Date.now() / 1000) + 60 * 60,
     };
 
-    const token = sign(payload, process.env.JWT_SECRET, 'HS512');
+    const token = await sign(payload, process.env.JWT_SECRET, 'HS512');
 
-    return token;
+    return {
+      accessToken: token,
+      email: user.email,
+    };
   }
 
   static async register({ email, password }: AuthDto) {
@@ -53,8 +56,11 @@ export class AuthService {
       exp: Math.floor(Date.now() / 1000) + 60 * 60,
     };
 
-    const token = sign(payload, process.env.JWT_SECRET, 'HS512');
+    const token = await sign(payload, process.env.JWT_SECRET, 'HS512');
 
-    return token;
+    return {
+      accessToken: token,
+      email: user.email,
+    };
   }
 }

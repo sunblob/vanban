@@ -1,7 +1,7 @@
 <template>
   <div
     class="flex flex-col gap-y-1 px-2 py-2 rounded-md bg-gray-400 cursor-pointer hover:bg-gray-400/90 group"
-    @click="isModalOpen = true"
+    @click="open(task.id)"
   >
     <div v-if="task.tags && task.tags.length" class="inline-flex gap-x-1">
       <span
@@ -9,9 +9,9 @@
         :key="tag"
         class="w-8 h-2 rounded-lg"
         :class="{
-          'bg-red-500': tag === 'bug',
-          'bg-blue-500': tag === 'task',
-          'bg-green-500': tag === 'story',
+          'bg-red-500': tag === 'BUG',
+          'bg-blue-500': tag === 'TASK',
+          'bg-green-500': tag === 'OTHER',
         }"
       ></span>
     </div>
@@ -35,26 +35,6 @@
         @click.stop="editTitle"
       />
     </div>
-    <div v-if="task.endsAt" class="flex gap-x-2">
-      <div v-if="task.endsAt" class="flex gap-x-2">
-        <clock-icon :size="16" />
-      </div>
-    </div>
-    <v-modal v-model="isModalOpen" blur dark>
-      <div class="w-[400px] bg-gray-700 rounded py-4 px-4">
-        <div class="text-gray-300">{{ task.title }}</div>
-      </div>
-    </v-modal>
-  </div>
-
-  <div
-    v-if="isModalOpen"
-    class="fixed top-0 left-0 w-full h-full backdrop-blur-sm flex items-center justify-center cursor-default"
-    @click.self="isModalOpen = false"
-  >
-    <div class="w-[400px] bg-gray-700 rounded py-4 px-4">
-      <div class="text-gray-300">{{ task.title }}</div>
-    </div>
   </div>
 </template>
 
@@ -63,9 +43,9 @@ import { defineComponent, type PropType } from 'vue';
 import { mapActions } from 'pinia';
 import { Clock3Icon as ClockIcon, PencilLineIcon, XIcon } from 'lucide-vue-next';
 
+import { useCardModal } from '@/stores/card-modal';
 import { useBoardStore } from '@/stores/board';
 
-import VModal from '@/components/ui/modal/v-modal.vue';
 import VButton from './ui/v-button.vue';
 
 import type { Card } from '@/types';
@@ -73,7 +53,7 @@ import type { Card } from '@/types';
 export default defineComponent({
   name: 'vanban-board-task',
 
-  components: { VModal, ClockIcon, PencilLineIcon, XIcon, VButton },
+  components: { PencilLineIcon, XIcon, VButton },
 
   props: {
     task: {
@@ -90,9 +70,12 @@ export default defineComponent({
     };
   },
 
-  emits: ['update-title'],
+  emits: ['update-task-title'],
 
   methods: {
+    ...mapActions(useCardModal, ['open']),
+    ...mapActions(useBoardStore, ['updateCard']),
+
     editTitle() {
       this.isEditing = true;
 
@@ -113,9 +96,12 @@ export default defineComponent({
         return;
       }
 
-      console.log('updateTitle:task.vue');
+      this.updateCard({
+        id: this.task.id,
+        title: this.title,
+      });
 
-      this.$emit('update-title', {
+      this.$emit('update-task-title', {
         taskId: this.task.id,
         title: this.title,
       });

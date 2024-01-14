@@ -11,9 +11,7 @@ authRouter.post('/login', zValidator('json', authDto), async (c) => {
 
   const result = await AuthService.login(data);
 
-  return c.json({
-    accessToken: result,
-  });
+  return c.json(result);
 });
 
 authRouter.post('/register', zValidator('json', authDto), async (c) => {
@@ -21,9 +19,7 @@ authRouter.post('/register', zValidator('json', authDto), async (c) => {
 
   const result = await AuthService.register(data);
 
-  return c.json({
-    accessToken: result,
-  });
+  return c.json(result);
 });
 
 authRouter.post('/logout', auth, (c) => {

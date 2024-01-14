@@ -50,6 +50,8 @@ app.onError((err, c) => {
     message = err.message;
   }
 
+  console.log('Error: ', err);
+
   return c.json({ error: err.message }, 500);
 });
 

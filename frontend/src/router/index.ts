@@ -27,8 +27,9 @@ const router = createRouter({
     },
     {
       path: '/boards/:id',
-      name: 'list',
-      component: () => import('@/views/list-page.vue'),
+      name: 'board-details',
+      component: () => import('@/views/board-details-page.vue'),
+      props: true,
     },
   ],
 });

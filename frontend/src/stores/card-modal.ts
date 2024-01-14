@@ -1,19 +1,39 @@
+import axios from 'axios';
 import { defineStore } from 'pinia';
+import { useAuth } from './auth';
+import type { Card } from '@/types';
+import { BACKEND_URL } from '@/constants';
 
-interface VanbanCardModal {
-  isOpen: boolean;
+interface CardModalStore {
+  id?: string;
+  card?: Card;
+  isCardOpen: boolean;
 }
 
-export const useCardModalStore = defineStore('card-modal', {
-  state: (): VanbanCardModal => ({
-    isOpen: false,
+export const useCardModal = defineStore('card-modal', {
+  state: (): CardModalStore => ({
+    id: undefined,
+    card: undefined,
+    isCardOpen: false,
   }),
   actions: {
-    open() {
-      this.isOpen = true;
+    async loadCardInfo() {
+      try {
+        const { data } = await axios.get<Card>(`${BACKEND_URL}/api/cards/${this.id}`, {
+          headers: { Authorization: useAuth().token },
+        });
+
+        this.card = data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    open(id: string) {
+      this.id = id;
+      this.isCardOpen = true;
     },
     close() {
-      this.isOpen = false;
+      this.isCardOpen = false;
     },
   },
 });

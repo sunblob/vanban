@@ -8,14 +8,14 @@
         class="text-gray-300 font-medium text-lg flex-grow pl-2"
         @click="editTitle"
       >
-        {{ column.title }}
+        {{ list.title }}
       </h2>
       <input
         v-else
         ref="titleInput"
         type="text"
         class="text-gray-300 font-medium text-lg rounded bg-gray-700 px-2 focus-visible:outline-none focus-visible:ring w-full"
-        :value="column.title"
+        :value="list.title"
         @keyup.enter="updateTitle"
         @blur="updateTitle"
       />
@@ -24,17 +24,19 @@
       </span>
     </div>
     <draggable
-      :list="column.tasks"
-      group="tasks"
+      :list="list.cards"
+      group="cards"
       tag="ul"
       item-key="id"
       class="flex flex-col gap-y-2"
       :animation="250"
+      :move="move"
+      :data-id="list.id"
       @change="test"
     >
       <template #item="{ element: task }: { element: Card }">
         <li>
-          <vanban-board-card :task="task" @update-title="updateTaskTitle" />
+          <vanban-board-card :task="task" @update-task-title="updateTaskTitle" />
         </li>
       </template>
     </draggable>
@@ -64,9 +66,10 @@
 
 <script lang="ts">
 import { defineComponent, type PropType } from 'vue';
-import { mapActions } from 'pinia';
 import { MoreHorizontalIcon, XIcon, CheckIcon } from 'lucide-vue-next';
 import Draggable from 'vuedraggable';
+
+import { mapActions } from 'pinia';
 
 import { useBoardStore } from '@/stores/board';
 
@@ -85,8 +88,10 @@ export default defineComponent({
     Draggable,
   },
 
+  emits: ['update-list-title', 'create-task', 'update-task-title'],
+
   props: {
-    column: {
+    list: {
       type: Object as PropType<List>,
       required: true,
     },
@@ -100,9 +105,9 @@ export default defineComponent({
     };
   },
 
-  emits: ['update-title', 'create-task', 'update-task'],
-
   methods: {
+    ...mapActions(useBoardStore, ['createCard']),
+
     addTask() {
       this.isAddingTask = true;
 
@@ -126,29 +131,32 @@ export default defineComponent({
       const newTitle = (event.target as HTMLInputElement).value;
 
       // if new title is empty or the same it was before we dont want to trigger emit
-      if (newTitle === '' || newTitle === this.column.title) {
+      if (newTitle === '' || newTitle === this.list.title) {
         this.isEditing = false;
         return;
       }
 
-      this.updateColumn({ id: this.column.id, title: newTitle });
-      // this.$emit('update-title', { columnId: this.column.id, title: newTitle });
+      this.$emit('update-list-title', { listId: this.list.id, title: newTitle });
 
       this.isEditing = false;
     },
 
     updateTaskTitle({ taskId, title }: { taskId: string; title: string }) {
-      this.updateTask({ columnId: this.column.id, taskTitle: title, taskId });
+      this.$emit('update-task-title', { taskId, title });
     },
 
     confirm() {
       if (this.taskTitle) {
-        this.createTask({ columnId: this.column.id, title: this.taskTitle });
+        this.$emit('create-task', {
+          listId: this.list.id,
+          title: this.taskTitle,
+        });
 
-        // this.$emit('create-task', {
-        //   columnId: this.column.id,
-        //   title: this.taskTitle,
-        // });
+        this.createCard({
+          listId: this.list.id,
+          title: this.taskTitle,
+          position: this.list.cards.length,
+        });
 
         this.isAddingTask = false;
         this.taskTitle = '';
@@ -166,11 +174,31 @@ export default defineComponent({
       this.taskTitle = '';
     },
 
-    test() {
-      console.log(this.column.tasks);
+    test(event: any) {
+      if (event.added) {
+        console.log('event: ', event);
+
+        console.log(event.added.element);
+      }
+
+      if (event.moved) {
+        console.log(event.moved.element);
+      }
+
+      console.log(this.list.cards);
     },
 
-    ...mapActions(useBoardStore, ['updateColumn', 'createTask', 'updateTask']),
+    move(event: any) {
+      console.log('move: ', event);
+
+      const fromListId = event.from.dataset.id;
+      const toListId = event.to.dataset.id;
+      if (fromListId === toListId) {
+        console.log('same list');
+      } else {
+        console.log('different list');
+      }
+    },
   },
 });
 </script>

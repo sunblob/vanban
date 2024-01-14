@@ -1,11 +1,11 @@
 export interface Workspace {
-  id: ID;
+  id: string;
   title: string;
   boards: Board[];
 }
 
 export interface Board {
-  id: ID;
+  id: string;
   title: string;
   fullImage?: String;
   previewImage?: String;
@@ -15,26 +15,26 @@ export interface Board {
 }
 
 export interface Activity {
-  id: ID;
+  id: string;
   author: string;
 }
 
 export interface List {
-  id: ID;
+  id: string;
   title: string;
   position: number;
-  boardId: ID;
-  tasks: Card[];
+  boardId: string;
+  cards: Card[];
 }
 
 export interface Card {
-  id: ID;
+  id: string;
   title: string;
   description?: string;
   position: number;
   tags?: Tag[];
-  authorId: ID;
-  listId: ID;
+  authorId: string;
+  listId: string;
 }
 
 type Tag = 'TASK' | 'BUG' | 'OTHER';
