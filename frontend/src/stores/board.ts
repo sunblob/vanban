@@ -155,6 +155,37 @@ export const useBoardStore = defineStore('board', {
       }
     },
 
+    async updateListPosition({
+      boardId,
+      listId,
+      newPosition,
+    }: {
+      boardId: string;
+      listId: string;
+      newPosition: number;
+    }) {
+      try {
+        await axios.patch(
+          `${BACKEND_URL}/api/lists/${listId}/reorder`,
+          {
+            newPosition,
+            boardId,
+          },
+          {
+            headers: {
+              Authorization: useAuth().token,
+            },
+          },
+        );
+
+        this.getBoard(this.currentBoard!.id);
+        toast.success('List moved');
+      } catch (error) {
+        console.log('Error: ', error);
+        toast.error('Error updating list');
+      }
+    },
+
     // cards
     async createCard({
       listId,
@@ -218,7 +249,41 @@ export const useBoardStore = defineStore('board', {
         toast.success('Card updated');
       } catch (error) {
         console.log('Error: ', error);
-        toast.error('Error updating board');
+        toast.error('Error updating card');
+      }
+    },
+
+    async updateCardPosition({
+      cardId,
+      newPosition,
+      listId,
+      newListId,
+    }: {
+      cardId: string;
+      newPosition: number;
+      listId: string;
+      newListId?: string;
+    }) {
+      try {
+        await axios.patch(
+          `${BACKEND_URL}/api/cards/${cardId}/reorder`,
+          {
+            newPosition,
+            listId,
+            newListId,
+          },
+          {
+            headers: {
+              Authorization: useAuth().token,
+            },
+          },
+        );
+
+        this.getBoard(this.currentBoard!.id);
+        toast.success('Card moved');
+      } catch (error) {
+        console.log('Error: ', error);
+        toast.error('Error updating card');
       }
     },
   },

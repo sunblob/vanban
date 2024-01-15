@@ -1,44 +1,34 @@
 <template>
-  <router-link
-    @click.self
-    :to="{
-      name: 'board-details',
-      params: {
-        id: board.id,
-      },
+  <div
+    class="h-[226px] flex flex-col justify-between rounded-md p-4 cursor-pointer"
+    :style="{
+      backgroundImage: `url(${board.previewImage})`,
+      backgroundColor: `#${getRandomColor}`,
     }"
+    @click.self="openBoard"
   >
-    <div
-      class="h-[226px] flex flex-col justify-between rounded-md p-4"
-      :style="{
-        backgroundImage: `url(${board.previewImage})`,
-        backgroundColor: `#${getRandomColor}`,
-      }"
-    >
-      <div class="flex justify-end relative">
-        <more-horizontal-icon
-          class="text-white hover:bg-gray-800/20 rounded"
-          @click.stop.self="openDropdown"
-        />
-        <v-popover title="Board actions" :is-open="isDropdownOpen">
-          <v-button
-            size="sm"
-            variant="ghost"
-            class="bg-red-500 hover:bg-red-800 text-white"
-            @click="handleDelete"
-          >
-            Delete
-          </v-button>
-        </v-popover>
-      </div>
-      <h2 class="text-3xl font-bold text-white">{{ board.title }}</h2>
+    <div class="flex justify-end relative">
+      <more-horizontal-icon
+        class="text-white hover:bg-gray-800/20 rounded"
+        @click.stop.self="openDropdown"
+      />
+      <v-popover title="Board actions" :is-open="isDropdownOpen" @close="isDropdownOpen = false">
+        <v-button
+          size="sm"
+          variant="ghost"
+          class="bg-red-500 hover:bg-red-800 text-white"
+          @click="handleDelete"
+        >
+          Delete
+        </v-button>
+      </v-popover>
     </div>
-  </router-link>
+    <h2 class="text-3xl font-bold text-white">{{ board.title }}</h2>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, type PropType } from 'vue';
-import { RouterLink } from 'vue-router';
 import { MoreHorizontalIcon } from 'lucide-vue-next';
 import { mapActions } from 'pinia';
 
@@ -51,7 +41,6 @@ import type { Board } from '@/types';
 
 export default defineComponent({
   components: {
-    RouterLink,
     MoreHorizontalIcon,
     VButton,
     VPopover,
@@ -94,6 +83,10 @@ export default defineComponent({
       this.deleteBoard(this.board.id);
 
       this.isDropdownOpen = false;
+    },
+
+    openBoard() {
+      this.$router.push({ name: 'board-details', params: { id: this.board.id } });
     },
   },
 });

@@ -8,15 +8,18 @@
         class="flex gap-x-4 items-start"
         :animation="250"
         item-key="id"
-        @change="test"
+        tag="ul"
+        @end="moveList"
       >
         <template #item="{ element: list }: { element: List }">
-          <vanban-board-list
-            :list="list"
-            @create-task="createTask"
-            @update-list-title="updateListTitle"
-            @update-task-title="updateTaskTitle"
-          />
+          <li :data-id="list.id">
+            <vanban-board-list
+              :list="list"
+              @create-task="createTask"
+              @update-list-title="updateListTitle"
+              @update-task-title="updateTaskTitle"
+            />
+          </li>
         </template>
       </draggable>
       <div
@@ -88,7 +91,7 @@ export default defineComponent({
   }),
 
   methods: {
-    ...mapActions(useBoardStore, ['createList']),
+    ...mapActions(useBoardStore, ['createList', 'updateListPosition']),
 
     onDragTask(task: Card) {
       this.activeDragTask = task.id;
@@ -126,8 +129,14 @@ export default defineComponent({
 
     updateTaskTitle() {},
 
-    test(event: any) {
-      console.log('vanban-board: ', event);
+    moveList(event: any) {
+      const newIndex = event.newIndex;
+
+      this.updateListPosition({
+        boardId: this.board.id,
+        listId: event.item.dataset.id,
+        newPosition: newIndex,
+      });
     },
   },
 });

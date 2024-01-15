@@ -1,11 +1,11 @@
 <template>
   <div
     class="flex flex-col gap-y-1 px-2 py-2 rounded-md bg-gray-400 cursor-pointer hover:bg-gray-400/90 group"
-    @click="open(task.id)"
+    @click="open(card.id)"
   >
-    <div v-if="task.tags && task.tags.length" class="inline-flex gap-x-1">
+    <div v-if="card.tags && card.tags.length" class="inline-flex gap-x-1">
       <span
-        v-for="tag in task.tags"
+        v-for="tag in card.tags"
         :key="tag"
         class="w-8 h-2 rounded-lg"
         :class="{
@@ -16,7 +16,7 @@
       ></span>
     </div>
     <div class="flex items-center justify-between gap-x-2">
-      <h3 v-if="!isEditing">{{ task.title }}</h3>
+      <h3 v-if="!isEditing">{{ card.title }}</h3>
       <div v-else class="w-full">
         <textarea
           ref="titleInput"
@@ -51,12 +51,12 @@ import VButton from './ui/v-button.vue';
 import type { Card } from '@/types';
 
 export default defineComponent({
-  name: 'vanban-board-task',
+  name: 'vanban-board-card',
 
   components: { PencilLineIcon, XIcon, VButton },
 
   props: {
-    task: {
+    card: {
       type: Object as PropType<Card>,
       required: true,
     },
@@ -70,7 +70,7 @@ export default defineComponent({
     };
   },
 
-  emits: ['update-task-title'],
+  emits: ['update-card-title'],
 
   methods: {
     ...mapActions(useCardModal, ['open']),
@@ -92,24 +92,24 @@ export default defineComponent({
     updateTitle() {
       this.isEditing = false;
 
-      if (this.title === this.task.title) {
+      if (this.title === this.card.title) {
         return;
       }
 
       this.updateCard({
-        id: this.task.id,
+        id: this.card.id,
         title: this.title,
       });
 
-      this.$emit('update-task-title', {
-        taskId: this.task.id,
+      this.$emit('update-card-title', {
+        taskId: this.card.id,
         title: this.title,
       });
     },
   },
 
   mounted() {
-    this.title = this.task.title;
+    this.title = this.card.title;
   },
 });
 </script>

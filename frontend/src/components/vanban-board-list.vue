@@ -30,13 +30,12 @@
       item-key="id"
       class="flex flex-col gap-y-2"
       :animation="250"
-      :move="move"
       :data-id="list.id"
-      @change="test"
+      @end="test(list.id, $event)"
     >
-      <template #item="{ element: task }: { element: Card }">
-        <li>
-          <vanban-board-card :task="task" @update-task-title="updateTaskTitle" />
+      <template #item="{ element: card }: { element: Card }">
+        <li :data-id="card.id">
+          <vanban-board-card :card="card" @update-card-title="updateCardTitle" />
         </li>
       </template>
     </draggable>
@@ -78,7 +77,7 @@ import VanbanBoardCard from './vanban-board-card.vue';
 import type { List, Card } from '@/types';
 
 export default defineComponent({
-  name: 'vanban-board-column',
+  name: 'vanban-board-list',
 
   components: {
     MoreHorizontalIcon,
@@ -106,7 +105,7 @@ export default defineComponent({
   },
 
   methods: {
-    ...mapActions(useBoardStore, ['createCard']),
+    ...mapActions(useBoardStore, ['createCard', 'updateCardPosition']),
 
     addTask() {
       this.isAddingTask = true;
@@ -141,7 +140,7 @@ export default defineComponent({
       this.isEditing = false;
     },
 
-    updateTaskTitle({ taskId, title }: { taskId: string; title: string }) {
+    updateCardTitle({ taskId, title }: { taskId: string; title: string }) {
       this.$emit('update-task-title', { taskId, title });
     },
 
@@ -174,29 +173,29 @@ export default defineComponent({
       this.taskTitle = '';
     },
 
-    test(event: any) {
-      if (event.added) {
-        console.log('event: ', event);
-
-        console.log(event.added.element);
-      }
-
-      if (event.moved) {
-        console.log(event.moved.element);
-      }
-
-      console.log(this.list.cards);
+    test(cardId: string, event: any) {
+      console.log('vanban-board-list: ', cardId, event);
     },
 
     move(event: any) {
-      console.log('move: ', event);
-
       const fromListId = event.from.dataset.id;
       const toListId = event.to.dataset.id;
+      const newPosition = event.newIndex;
+      const cardId = event.item.dataset.id;
+
       if (fromListId === toListId) {
-        console.log('same list');
+        this.updateCardPosition({
+          listId: fromListId,
+          cardId,
+          newPosition,
+        });
       } else {
-        console.log('different list');
+        this.updateCardPosition({
+          listId: fromListId,
+          cardId,
+          newPosition,
+          newListId: toListId,
+        });
       }
     },
   },
