@@ -33,7 +33,14 @@ export class BoardService {
       include: {
         lists: {
           include: {
-            cards: true,
+            cards: {
+              orderBy: {
+                position: 'asc',
+              },
+            },
+          },
+          orderBy: {
+            position: 'asc',
           },
         },
       },
@@ -48,11 +55,13 @@ export class BoardService {
     return board;
   }
 
-  static async createBoard(userId: string, { title }: CreateBoardDto) {
+  static async createBoard(userId: string, { title, image, previewImage }: CreateBoardDto) {
     const board = await prisma.board.create({
       data: {
         title,
         authorId: userId,
+        fullImage: image,
+        previewImage,
         users: {
           create: {
             userId,

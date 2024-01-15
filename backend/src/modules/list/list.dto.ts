@@ -22,7 +22,7 @@ export const updateListDto = z.object({
 export type UpdateListDto = z.infer<typeof updateListDto>;
 
 export const updateListPositionDto = z.object({
-  newPosition: z.number().int().min(0).positive(),
+  newPosition: z.number().int().min(0),
   boardId: z.string().uuid(),
 });
 

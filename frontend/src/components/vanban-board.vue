@@ -1,5 +1,8 @@
 <template>
-  <div class="relative h-full bg-rose-400 flex flex-col">
+  <div
+    class="relative h-full bg-rose-400 flex flex-col bg-cover"
+    :style="{ backgroundImage: `url(${board.fullImage})` }"
+  >
     <vanban-board-header :title="board.title" @delete-board="deleteBoard" />
     <div class="h-full overflow-auto flex gap-x-4 items-start p-4">
       <draggable
@@ -131,6 +134,10 @@ export default defineComponent({
 
     moveList(event: any) {
       const newIndex = event.newIndex;
+
+      if (newIndex === event.oldIndex) {
+        return;
+      }
 
       this.updateListPosition({
         boardId: this.board.id,

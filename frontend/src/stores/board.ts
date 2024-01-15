@@ -4,6 +4,7 @@ import { defineStore } from 'pinia';
 import { toast } from 'vue-sonner';
 import { useAuth } from './auth';
 import { BACKEND_URL } from '@/constants';
+import { NetClient } from '@/http/net-client';
 
 interface BoardStore {
   boards: Board[];
@@ -19,7 +20,7 @@ export const useBoardStore = defineStore('board', {
   actions: {
     async getBoards() {
       try {
-        const { data } = await axios.get<Board[]>(`${BACKEND_URL}/api/boards`, {
+        const { data } = await NetClient.get<Board[]>(`/api/boards`, {
           headers: {
             Authorization: useAuth().token,
           },
@@ -34,7 +35,7 @@ export const useBoardStore = defineStore('board', {
 
     async getBoard(boardId: string) {
       try {
-        const { data } = await axios.get<Board>(`${BACKEND_URL}/api/boards/${boardId}`, {
+        const { data } = await NetClient.get<Board>(`/api/boards/${boardId}`, {
           headers: {
             Authorization: useAuth().token,
           },
@@ -47,12 +48,22 @@ export const useBoardStore = defineStore('board', {
       }
     },
 
-    async createBoard({ title, image }: { title: string; image?: string }) {
+    async createBoard({
+      title,
+      image,
+      previewImage,
+    }: {
+      title: string;
+      image?: string;
+      previewImage?: string;
+    }) {
       try {
-        const { data } = await axios.post<Board>(
-          `${BACKEND_URL}/api/boards`,
+        const { data } = await NetClient.post<Board>(
+          `/api/boards`,
           {
             title,
+            image,
+            previewImage,
           },
           {
             headers: {
@@ -79,7 +90,7 @@ export const useBoardStore = defineStore('board', {
       image?: string;
     }) {
       try {
-        const { data } = await axios.patch<Board>(
+        const { data } = await NetClient.patch<Board>(
           `${BACKEND_URL}/api/boards/${boardId}`,
           {
             title,
@@ -108,7 +119,7 @@ export const useBoardStore = defineStore('board', {
 
     async deleteBoard(boardId: string) {
       try {
-        await axios.delete(`${BACKEND_URL}/api/boards/${boardId}`, {
+        await NetClient.delete(`/api/boards/${boardId}`, {
           headers: {
             Authorization: useAuth().token,
           },
@@ -133,8 +144,8 @@ export const useBoardStore = defineStore('board', {
       position: number;
     }) {
       try {
-        const { data } = await axios.post(
-          `${BACKEND_URL}/api/lists`,
+        await NetClient.post(
+          `/api/lists`,
           {
             title,
             boardId,
@@ -155,6 +166,22 @@ export const useBoardStore = defineStore('board', {
       }
     },
 
+    async deleteList(listId: string) {
+      try {
+        await NetClient.delete(`/api/lists/${listId}`, {
+          headers: {
+            Authorization: useAuth().token,
+          },
+        });
+
+        this.getBoard(this.currentBoard!.id);
+        toast.success('List deleted');
+      } catch (error) {
+        console.log('Error: ', error);
+        toast.error('Error deleting list');
+      }
+    },
+
     async updateListPosition({
       boardId,
       listId,
@@ -165,8 +192,8 @@ export const useBoardStore = defineStore('board', {
       newPosition: number;
     }) {
       try {
-        await axios.patch(
-          `${BACKEND_URL}/api/lists/${listId}/reorder`,
+        await NetClient.patch(
+          `/api/lists/${listId}/reorder`,
           {
             newPosition,
             boardId,
@@ -199,7 +226,7 @@ export const useBoardStore = defineStore('board', {
       position: number;
     }) {
       try {
-        const { data } = await axios.post(
+        const { data } = await NetClient.post(
           `${BACKEND_URL}/api/cards`,
           {
             title,
@@ -232,8 +259,8 @@ export const useBoardStore = defineStore('board', {
       description?: string;
     }) {
       try {
-        await axios.patch(
-          `${BACKEND_URL}/api/cards/${id}`,
+        await NetClient.patch(
+          `/api/cards/${id}`,
           {
             title,
             description,
@@ -253,6 +280,22 @@ export const useBoardStore = defineStore('board', {
       }
     },
 
+    async deleteCard(cardId: string) {
+      try {
+        await NetClient.delete(`/api/cards/${cardId}`, {
+          headers: {
+            Authorization: useAuth().token,
+          },
+        });
+
+        this.getBoard(this.currentBoard!.id);
+        toast.success('Card deleted');
+      } catch (error) {
+        console.log('Error: ', error);
+        toast.error('Error deleting card');
+      }
+    },
+
     async updateCardPosition({
       cardId,
       newPosition,
@@ -265,8 +308,8 @@ export const useBoardStore = defineStore('board', {
       newListId?: string;
     }) {
       try {
-        await axios.patch(
-          `${BACKEND_URL}/api/cards/${cardId}/reorder`,
+        await NetClient.patch(
+          `/api/cards/${cardId}/reorder`,
           {
             newPosition,
             listId,

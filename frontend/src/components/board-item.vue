@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-[226px] flex flex-col justify-between rounded-md p-4 cursor-pointer"
+    class="h-[226px] flex flex-col justify-between rounded-md p-4 cursor-pointer bg-cover"
     :style="{
       backgroundImage: `url(${board.previewImage})`,
       backgroundColor: `#${getRandomColor}`,

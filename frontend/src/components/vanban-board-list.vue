@@ -19,9 +19,28 @@
         @keyup.enter="updateTitle"
         @blur="updateTitle"
       />
-      <span>
-        <more-horizontal-icon class="text-gray-300 hover:bg-neutral-600/50 rounded" />
-      </span>
+      <div class="relative">
+        <more-horizontal-icon
+          class="text-gray-300 hover:bg-neutral-600/50 rounded"
+          @click="isDropdownOpen = true"
+        />
+        <v-popover
+          title="List actions"
+          :is-open="isDropdownOpen"
+          @close="isDropdownOpen = false"
+          class="right-[-50%] translate-x-[50%]"
+        >
+          <div class="flex flex-col gap-y-2">
+            <v-button variant="ghost">Copy list</v-button>
+            <v-button
+              variant="ghost"
+              class="bg-red-500 hover:bg-red-800 text-white"
+              @click="handleDelete"
+              >Delete list</v-button
+            >
+          </div>
+        </v-popover>
+      </div>
     </div>
     <draggable
       :list="list.cards"
@@ -31,7 +50,7 @@
       class="flex flex-col gap-y-2"
       :animation="250"
       :data-id="list.id"
-      @end="test(list.id, $event)"
+      @end="move"
     >
       <template #item="{ element: card }: { element: Card }">
         <li :data-id="card.id">
@@ -73,6 +92,8 @@ import { mapActions } from 'pinia';
 import { useBoardStore } from '@/stores/board';
 
 import VanbanBoardCard from './vanban-board-card.vue';
+import VPopover from './ui/popover/v-popover.vue';
+import VButton from './ui/v-button.vue';
 
 import type { List, Card } from '@/types';
 
@@ -85,6 +106,8 @@ export default defineComponent({
     CheckIcon,
     VanbanBoardCard,
     Draggable,
+    VPopover,
+    VButton,
   },
 
   emits: ['update-list-title', 'create-task', 'update-task-title'],
@@ -101,11 +124,12 @@ export default defineComponent({
       isEditing: false,
       isAddingTask: false,
       taskTitle: '',
+      isDropdownOpen: false,
     };
   },
 
   methods: {
-    ...mapActions(useBoardStore, ['createCard', 'updateCardPosition']),
+    ...mapActions(useBoardStore, ['createCard', 'updateCardPosition', 'deleteList']),
 
     addTask() {
       this.isAddingTask = true;
@@ -173,15 +197,15 @@ export default defineComponent({
       this.taskTitle = '';
     },
 
-    test(cardId: string, event: any) {
-      console.log('vanban-board-list: ', cardId, event);
-    },
-
     move(event: any) {
       const fromListId = event.from.dataset.id;
       const toListId = event.to.dataset.id;
       const newPosition = event.newIndex;
       const cardId = event.item.dataset.id;
+
+      if (fromListId === toListId && newPosition === event.oldIndex) {
+        return;
+      }
 
       if (fromListId === toListId) {
         this.updateCardPosition({
@@ -197,6 +221,10 @@ export default defineComponent({
           newListId: toListId,
         });
       }
+    },
+
+    handleDelete() {
+      this.deleteList(this.list.id);
     },
   },
 });

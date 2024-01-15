@@ -2,6 +2,8 @@ import { z } from 'zod';
 
 export const createBoardDto = z.object({
   title: z.string(),
+  image: z.string().optional(),
+  previewImage: z.string().optional(),
 });
 
 export type CreateBoardDto = z.infer<typeof createBoardDto>;
