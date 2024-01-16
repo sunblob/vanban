@@ -45,6 +45,14 @@ cardRouter.delete('/:id', auth(), async (c) => {
   return c.json(card);
 });
 
+cardRouter.post('/:id/copy', auth(), async (c) => {
+  const userId = getUser(c);
+  const cardId = c.req.param('id');
+  const card = await CardService.copyCard(userId, cardId);
+
+  return c.json(card);
+});
+
 cardRouter.patch('/:id/reorder', auth(), zValidator('json', updateCardPositionDto), async (c) => {
   const userId = getUser(c);
   const data = c.req.valid('json');

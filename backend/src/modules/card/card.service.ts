@@ -104,6 +104,46 @@ export class CardService {
     return card;
   }
 
+  static async copyCard(userId: string, cardId: string) {
+    const card = await prisma.card.findFirst({
+      where: {
+        id: cardId,
+      },
+    });
+
+    if (!card) {
+      throw new HTTPException(404, {
+        message: 'Card not found',
+      });
+    }
+
+    const cardPosition = await prisma.card.count({
+      where: {
+        listId: card.listId,
+      },
+    });
+
+    const newCard = await prisma.card.create({
+      data: {
+        title: card.title + ' - copy',
+        description: card.description,
+        position: cardPosition,
+        listId: card.listId,
+        tags: card.tags,
+        authorId: userId,
+      },
+    });
+
+    // create card log
+    await LogsService.createLog(userId, {
+      entityId: newCard.id,
+      entityType: 'CARD',
+      action: 'CREATE',
+    });
+
+    return newCard;
+  }
+
   static async reorderCard(userId: string, cardId: string, { newPosition, listId, newListId }: UpdateCardPositionDto) {
     const card = await prisma.card.findFirst({
       where: {

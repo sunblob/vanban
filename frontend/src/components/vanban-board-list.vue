@@ -31,7 +31,7 @@
           class="right-[-50%] translate-x-[50%]"
         >
           <div class="flex flex-col gap-y-2">
-            <v-button variant="ghost">Copy list</v-button>
+            <v-button variant="ghost" @click="copy">Copy list</v-button>
             <v-button
               variant="ghost"
               class="bg-red-500 hover:bg-red-800 text-white"
@@ -129,7 +129,13 @@ export default defineComponent({
   },
 
   methods: {
-    ...mapActions(useBoardStore, ['createCard', 'updateCardPosition', 'deleteList']),
+    ...mapActions(useBoardStore, [
+      'createCard',
+      'updateCardPosition',
+      'deleteList',
+      'copyList',
+      'updateList',
+    ]),
 
     addTask() {
       this.isAddingTask = true;
@@ -158,6 +164,8 @@ export default defineComponent({
         this.isEditing = false;
         return;
       }
+
+      this.updateList(this.list.id, newTitle);
 
       this.$emit('update-list-title', { listId: this.list.id, title: newTitle });
 
@@ -221,6 +229,12 @@ export default defineComponent({
           newListId: toListId,
         });
       }
+    },
+
+    copy() {
+      this.isDropdownOpen = false;
+
+      this.copyList(this.list.id);
     },
 
     handleDelete() {

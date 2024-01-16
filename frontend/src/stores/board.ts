@@ -165,6 +165,28 @@ export const useBoardStore = defineStore('board', {
       }
     },
 
+    async updateList(listId: string, title: string) {
+      try {
+        await NetClient.patch(
+          `/api/lists/${listId}`,
+          {
+            title,
+          },
+          {
+            headers: {
+              Authorization: useAuth().token,
+            },
+          },
+        );
+
+        this.getBoard(this.currentBoard!.id);
+        toast.success('List updated');
+      } catch (error) {
+        console.log('Error: ', error);
+        toast.error('Error updating list');
+      }
+    },
+
     async deleteList(listId: string) {
       try {
         await NetClient.delete(`/api/lists/${listId}`, {
@@ -178,6 +200,26 @@ export const useBoardStore = defineStore('board', {
       } catch (error) {
         console.log('Error: ', error);
         toast.error('Error deleting list');
+      }
+    },
+
+    async copyList(listId: string) {
+      try {
+        await NetClient.post(
+          `/api/lists/${listId}/copy`,
+          {},
+          {
+            headers: {
+              Authorization: useAuth().token,
+            },
+          },
+        );
+
+        this.getBoard(this.currentBoard!.id);
+        toast.success('List copied');
+      } catch (error) {
+        console.log('Error: ', error);
+        toast.error('Error copying list');
       }
     },
 
@@ -292,6 +334,26 @@ export const useBoardStore = defineStore('board', {
       } catch (error) {
         console.log('Error: ', error);
         toast.error('Error deleting card');
+      }
+    },
+
+    async copyCard(cardId: string) {
+      try {
+        await NetClient.post(
+          `/api/cards/${cardId}/copy`,
+          {},
+          {
+            headers: {
+              Authorization: useAuth().token,
+            },
+          },
+        );
+
+        this.getBoard(this.currentBoard!.id);
+        toast.success('Card copied');
+      } catch (error) {
+        console.log('Error: ', error);
+        toast.error('Error copying card');
       }
     },
 

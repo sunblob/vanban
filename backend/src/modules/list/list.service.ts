@@ -126,6 +126,60 @@ export class ListService {
     return list;
   }
 
+  static async copyList(userId: string, listId: string) {
+    const list = await prisma.list.findFirst({
+      where: {
+        id: listId,
+      },
+      include: {
+        cards: {
+          orderBy: {
+            position: 'asc',
+          },
+        },
+      },
+    });
+
+    if (!list) {
+      throw new HTTPException(404, {
+        message: 'List not found',
+      });
+    }
+
+    const listCount = await prisma.list.count({
+      where: {
+        boardId: list.boardId,
+      },
+    });
+
+    const newList = await prisma.list.create({
+      data: {
+        title: list.title + ' - copy',
+        position: listCount,
+        boardId: list.boardId,
+        cards: {
+          createMany: {
+            data: list.cards.map((card) => ({
+              title: card.title,
+              description: card.description,
+              position: card.position,
+              authorId: card.authorId,
+            })),
+          },
+        },
+      },
+    });
+
+    // create list log
+    await LogsService.createLog(userId, {
+      entityId: newList.id,
+      entityType: 'LIST',
+      action: 'CREATE',
+    });
+
+    return newList;
+  }
+
   static async reorderList(userId: string, listId: string, { newPosition, boardId }: UpdateListPositionDto) {
     const list = await prisma.list.findFirst({
       where: {

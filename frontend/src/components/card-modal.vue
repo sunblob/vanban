@@ -92,10 +92,12 @@ export default defineComponent({
 
   methods: {
     ...mapActions(useCardModal, ['close', 'loadCardInfo']),
-    ...mapActions(useBoardStore, ['deleteCard']),
+    ...mapActions(useBoardStore, ['deleteCard', 'copyCard']),
 
     handleCopy() {
       this.close();
+
+      this.copyCard(this.id!);
     },
 
     handleDelete() {

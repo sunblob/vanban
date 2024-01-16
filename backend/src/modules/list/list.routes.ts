@@ -47,6 +47,14 @@ listRouter.delete('/:id', auth(), async (c) => {
   return c.json(list);
 });
 
+listRouter.post('/:id/copy', auth(), async (c) => {
+  const userId = getUser(c);
+  const listId = c.req.param('id');
+  const card = await ListService.copyList(userId, listId);
+
+  return c.json(card);
+});
+
 listRouter.patch('/:id/reorder', auth(), zValidator('json', updateListPositionDto), async (c) => {
   const userId = getUser(c);
   const data = c.req.valid('json');
