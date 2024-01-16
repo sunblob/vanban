@@ -1,5 +1,5 @@
 <template>
-  <v-modal :is-open="isOpen" @close="close">
+  <v-modal :is-open="isOpen" @close="handleCLose">
     <div v-if="card" class="w-[500px] rounded p-6 bg-gray-800 text-white">
       <div class="flex items-start gap-x-3 mb-6 w-full">
         <layout-icon class="h-5 w-5 mt-1 text-white" />
@@ -51,8 +51,8 @@
               Copy
             </v-button>
             <v-button
-              variant="ghost"
-              class="w-full justify-start flex items-center cursor-pointer border border-gray-500"
+              variant="danger"
+              class="w-full justify-start flex items-center"
               size="sm"
               @click="handleDelete"
             >
@@ -136,6 +136,12 @@ export default defineComponent({
         id: this.id!,
         description: this.card!.description,
       });
+    },
+
+    handleCLose() {
+      this.isEditingDescription = false;
+
+      this.close();
     },
   },
 

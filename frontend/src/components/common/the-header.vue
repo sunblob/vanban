@@ -29,14 +29,7 @@
             @close="closeDropdown"
             class="top-4 right-0"
           >
-            <v-button
-              size="sm"
-              variant="ghost"
-              class="bg-red-500 hover:bg-red-800 text-white"
-              @click="handleLogout"
-            >
-              Logout
-            </v-button>
+            <v-button size="sm" variant="danger" @click="handleLogout"> Logout </v-button>
           </v-popover>
         </div>
       </div>

@@ -32,12 +32,7 @@
         >
           <div class="flex flex-col gap-y-2">
             <v-button variant="ghost" @click="copy">Copy list</v-button>
-            <v-button
-              variant="ghost"
-              class="bg-red-500 hover:bg-red-800 text-white"
-              @click="handleDelete"
-              >Delete list</v-button
-            >
+            <v-button variant="danger" @click="handleDelete">Delete list</v-button>
           </div>
         </v-popover>
       </div>

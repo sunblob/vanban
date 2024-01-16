@@ -26,7 +26,7 @@
         class="right-0"
         @close="isDropdownOpen = false"
       >
-        <v-button variant="ghost" @click="deleteBoard"> Delete this board </v-button>
+        <v-button variant="danger" @click="deleteBoard"> Delete this board </v-button>
       </v-popover>
     </div>
   </div>

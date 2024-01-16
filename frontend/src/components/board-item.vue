@@ -13,14 +13,7 @@
         @click.stop.self="openDropdown"
       />
       <v-popover title="Board actions" :is-open="isDropdownOpen" @close="isDropdownOpen = false">
-        <v-button
-          size="sm"
-          variant="ghost"
-          class="bg-red-500 hover:bg-red-800 text-white"
-          @click="handleDelete"
-        >
-          Delete
-        </v-button>
+        <v-button size="sm" variant="danger" @click="handleDelete"> Delete </v-button>
       </v-popover>
     </div>
     <h2 class="text-3xl font-bold text-white">{{ board.title }}</h2>
