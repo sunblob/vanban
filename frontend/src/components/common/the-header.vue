@@ -8,7 +8,9 @@
         <router-link v-else to="/boards">
           <span class="text-lg text-neutral-700">Vanban</span>
         </router-link>
-        <v-button v-if="isLoggedIn" size="sm"> Create </v-button>
+        <router-link v-if="isLoggedIn" :to="{ name: 'board-create' }">
+          <v-button size="sm"> Create </v-button>
+        </router-link>
       </div>
       <div class="space-x-4 flex items-center justify-between">
         <v-button v-if="!isLoggedIn" size="sm" variant="ghost">

@@ -296,7 +296,7 @@ export const useBoardStore = defineStore('board', {
       description,
     }: {
       id: string;
-      title: string;
+      title?: string;
       description?: string;
     }) {
       try {

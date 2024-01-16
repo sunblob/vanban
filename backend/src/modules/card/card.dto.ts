@@ -11,7 +11,7 @@ export type CreateCardDto = z.infer<typeof createCardDto>;
 
 export const updateCardDto = z.object({
   title: z.string().min(1).max(255).optional(),
-  description: z.string().min(1).max(255).optional(),
+  description: z.string().optional(),
   listId: z.string().uuid().optional(),
   tags: z.array(z.nativeEnum(TAG)).optional(),
   position: z.number().int().min(0).optional(),
