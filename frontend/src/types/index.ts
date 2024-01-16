@@ -37,6 +37,10 @@ export interface Card {
   listId: string;
 }
 
+export interface CardWithList extends Card {
+  list: List;
+}
+
 type Tag = 'TASK' | 'BUG' | 'OTHER';
 
 export type ID = string | number;

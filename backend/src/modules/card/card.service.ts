@@ -25,6 +25,9 @@ export class CardService {
       where: {
         id: cardId,
       },
+      include: {
+        list: true,
+      },
     });
 
     if (!card) {

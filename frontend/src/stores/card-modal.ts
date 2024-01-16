@@ -1,12 +1,11 @@
-import axios from 'axios';
 import { defineStore } from 'pinia';
 import { useAuth } from './auth';
-import type { Card } from '@/types';
-import { BACKEND_URL } from '@/constants';
+import { NetClient } from '@/http/net-client';
+import type { CardWithList } from '@/types';
 
 interface CardModalStore {
   id?: string;
-  card?: Card;
+  card?: CardWithList;
   isCardOpen: boolean;
 }
 
@@ -19,7 +18,7 @@ export const useCardModal = defineStore('card-modal', {
   actions: {
     async loadCardInfo() {
       try {
-        const { data } = await axios.get<Card>(`${BACKEND_URL}/api/cards/${this.id}`, {
+        const { data } = await NetClient.get<CardWithList>(`/api/cards/${this.id}`, {
           headers: { Authorization: useAuth().token },
         });
 

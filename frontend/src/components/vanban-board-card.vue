@@ -23,6 +23,7 @@
           class="w-full resize-none focus-visible:outline-none focus-visible:ring rounded bg-gray-500/50"
           v-model="title"
           @click.stop
+          @keyup.enter="isEditing = false"
         />
         <div class="flex items-center gap-x-2">
           <v-button size="sm" class="min-w-[100px]" @click.stop="updateTitle">Edit</v-button>

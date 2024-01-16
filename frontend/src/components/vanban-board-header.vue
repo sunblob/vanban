@@ -1,7 +1,18 @@
 <template>
   <div class="w-full flex items-center justify-between p-4 bg-gray-800/70">
     <div class="text-white text-2xl font-semibold">
-      {{ title }}
+      <span v-if="!isEditing" class="cursor-pointer" @click="editTitle">
+        {{ title }}
+      </span>
+      <input
+        v-else
+        ref="titleInput"
+        type="text"
+        :value="title"
+        class="bg-gray-800/60 text-white max-w-[200px]"
+        @blur="isEditing = false"
+        @keyup.enter="updateTitle"
+      />
     </div>
     <div class="relative">
       <more-horizontal-icon
@@ -43,11 +54,12 @@ export default defineComponent({
     },
   },
 
-  emits: ['delete-board'],
+  emits: ['delete-board', 'update-title'],
 
   data() {
     return {
       isDropdownOpen: false,
+      isEditing: false,
     };
   },
 
@@ -56,6 +68,29 @@ export default defineComponent({
       this.isDropdownOpen = false;
 
       this.$emit('delete-board');
+    },
+
+    editTitle() {
+      this.isEditing = true;
+
+      // next tick because otherwise ref is undefined
+      this.$nextTick(() => {
+        (this.$refs['titleInput'] as HTMLInputElement).focus();
+        (this.$refs['titleInput'] as HTMLInputElement).select();
+      });
+    },
+
+    updateTitle(event: Event) {
+      const newTitle = (event.target as HTMLInputElement).value;
+
+      if (!newTitle.length || newTitle === this.title) {
+        this.isEditing = false;
+        return;
+      }
+
+      this.isEditing = false;
+
+      this.$emit('update-title', newTitle);
     },
   },
 });

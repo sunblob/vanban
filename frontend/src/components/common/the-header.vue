@@ -10,7 +10,7 @@
         </router-link>
         <v-button v-if="isLoggedIn" size="sm"> Create </v-button>
       </div>
-      <div class="space-x-4 md:block md:w-auto flex items-center justify-between w-full">
+      <div class="space-x-4 flex items-center justify-between w-full">
         <v-button v-if="!isLoggedIn" size="sm" variant="ghost">
           <router-link to="/sign-in"> Login </router-link>
         </v-button>
@@ -90,5 +90,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped></style>

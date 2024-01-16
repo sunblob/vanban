@@ -1,10 +1,8 @@
-import type { Board, ID } from '@/types';
-import axios from 'axios';
 import { defineStore } from 'pinia';
 import { toast } from 'vue-sonner';
 import { useAuth } from './auth';
-import { BACKEND_URL } from '@/constants';
 import { NetClient } from '@/http/net-client';
+import type { Board } from '@/types';
 
 interface BoardStore {
   boards: Board[];
@@ -91,7 +89,7 @@ export const useBoardStore = defineStore('board', {
     }) {
       try {
         const { data } = await NetClient.patch<Board>(
-          `${BACKEND_URL}/api/boards/${boardId}`,
+          `/api/boards/${boardId}`,
           {
             title,
           },
@@ -110,7 +108,8 @@ export const useBoardStore = defineStore('board', {
           return board;
         });
 
-        toast.success('Board updated');
+        this.getBoard(boardId);
+        toast.success('Board title updated');
       } catch (error) {
         console.log('Error: ', error);
         toast.error('Error updating board');
@@ -227,7 +226,7 @@ export const useBoardStore = defineStore('board', {
     }) {
       try {
         const { data } = await NetClient.post(
-          `${BACKEND_URL}/api/cards`,
+          `/api/cards`,
           {
             title,
             description,

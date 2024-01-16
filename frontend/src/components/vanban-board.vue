@@ -3,7 +3,11 @@
     class="relative h-full bg-rose-400 flex flex-col bg-cover"
     :style="{ backgroundImage: `url(${board.fullImage})` }"
   >
-    <vanban-board-header :title="board.title" @delete-board="deleteBoard" />
+    <vanban-board-header
+      :title="board.title"
+      @delete-board="deleteBoard"
+      @update-title="updateBoardTitle"
+    />
     <div class="h-full overflow-auto flex gap-x-4 items-start p-4">
       <draggable
         :list="board.lists"
@@ -94,7 +98,7 @@ export default defineComponent({
   }),
 
   methods: {
-    ...mapActions(useBoardStore, ['createList', 'updateListPosition']),
+    ...mapActions(useBoardStore, ['createList', 'updateListPosition', 'updateBoard']),
 
     onDragTask(task: Card) {
       this.activeDragTask = task.id;
@@ -119,8 +123,11 @@ export default defineComponent({
       this.$emit('delete-board', this.board.id);
     },
 
-    updateBoard() {
-      this.$emit('update-board', this.board);
+    updateBoardTitle(newTitle: string) {
+      this.updateBoard({
+        boardId: this.board.id,
+        title: newTitle,
+      });
     },
 
     // list
