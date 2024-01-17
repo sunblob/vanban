@@ -70,7 +70,7 @@ export const useBoardStore = defineStore('board', {
           },
         );
 
-        this.boards.push(data);
+        this.getBoards();
         toast.success('Board created');
       } catch (error) {
         console.log('Error: ', error);
@@ -100,14 +100,6 @@ export const useBoardStore = defineStore('board', {
           },
         );
 
-        this.boards = this.boards.map((board) => {
-          if (board.id === boardId) {
-            return data;
-          }
-
-          return board;
-        });
-
         this.getBoard(boardId);
         toast.success('Board title updated');
       } catch (error) {
@@ -124,7 +116,7 @@ export const useBoardStore = defineStore('board', {
           },
         });
 
-        this.boards = this.boards.filter((board) => board.id !== boardId);
+        this.getBoards();
         toast.success('Board deleted');
       } catch (error) {
         console.log('Error: ', error);

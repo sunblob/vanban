@@ -1,6 +1,6 @@
-import axios, { AxiosError } from 'axios';
 import { defineStore } from 'pinia';
 import { toast } from 'vue-sonner';
+import { NetClient } from '@/http/net-client';
 
 interface AuthStore {
   token: string | null;
@@ -18,8 +18,8 @@ export const useAuth = defineStore('auth', {
   actions: {
     async register(email: string, password: string) {
       try {
-        const { data } = await axios.post<{ accessToken: string; email: string }>(
-          'http://localhost:3000/api/auth/register',
+        const { data } = await NetClient.post<{ accessToken: string; email: string }>(
+          '/api/auth/register',
           {
             email,
             password,
@@ -37,8 +37,8 @@ export const useAuth = defineStore('auth', {
     },
     async login(email: string, password: string) {
       try {
-        const { data } = await axios.post<{ accessToken: string; email: string }>(
-          'http://localhost:3000/api/auth/login',
+        const { data } = await NetClient.post<{ accessToken: string; email: string }>(
+          '/api/auth/login',
           {
             email,
             password,
