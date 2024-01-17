@@ -160,13 +160,17 @@ export class CardService {
 
     const diffPosition = newPosition - card.position;
 
+    if (!newListId) {
+      newListId = card.listId;
+    }
+
     if (diffPosition === 0 && card.listId === newListId) {
       throw new HTTPException(400, {
         message: 'Card already in that position',
       });
     }
 
-    if (diffPosition > 0) {
+    if (diffPosition > 0 && card.listId === newListId) {
       await prisma.card.updateMany({
         where: {
           listId,
@@ -181,7 +185,7 @@ export class CardService {
           },
         },
       });
-    } else {
+    } else if (diffPosition < 0 && card.listId === newListId) {
       await prisma.card.updateMany({
         where: {
           listId,
@@ -217,6 +221,20 @@ export class CardService {
 
     // if card is moved to a new list to the same position, increment the position of the cards in the new list
     if (card.listId !== newListId && diffPosition === 0) {
+      await prisma.card.updateMany({
+        where: {
+          listId: newListId,
+          position: {
+            gte: newPosition,
+          },
+        },
+        data: {
+          position: {
+            increment: 1,
+          },
+        },
+      });
+    } else if (card.listId !== newListId && diffPosition > 0) {
       await prisma.card.updateMany({
         where: {
           listId: newListId,
