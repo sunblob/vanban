@@ -1,4 +1,6 @@
 {
+  "name": "vanban-backend",
+  "private": true,
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "db:generate": "prisma generate",

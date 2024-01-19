@@ -1,0 +1,13 @@
+{
+  "name": "vanban",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "db:generate": "turbo run db:generate"
+  },
+  "devDependencies": {
+    "turbo": "^1.11.3"
+  },
+  "packageManager": "pnpm@8.13.1"
+}
