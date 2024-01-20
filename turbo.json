@@ -4,11 +4,15 @@
     "build": {
       "outputs": ["dist/**"]
     },
-    "type-check": {},
+    "type-check": {
+      "cache": false
+    },
     "dev": {
       "cache": false,
       "persistent": true
     },
-    "db:generate": {}
+    "db:generate": {
+      "cache": false
+    }
   }
 }
