@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "build": "tsup",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
@@ -22,6 +23,7 @@
     "@types/node": "^20.10.6",
     "prisma": "^5.7.1",
     "ts-node": "^10.9.2",
+    "tsup": "^8.0.1",
     "tsx": "^3.12.2",
     "typescript": "^5.3.3"
   }
