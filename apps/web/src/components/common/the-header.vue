@@ -37,51 +37,30 @@
   </header>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { RouterLink } from 'vue-router';
-import { mapState, mapActions } from 'pinia';
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+import { RouterLink, useRouter } from 'vue-router';
 import { useAuth } from '@/stores/auth';
 import VPopover from '../ui/popover/v-popover.vue';
 import VButton from '../ui/v-button.vue';
 
-export default defineComponent({
-  components: {
-    VButton,
-    RouterLink,
-    VPopover,
-  },
+const { logout, isLoggedIn, email } = useAuth();
+const router = useRouter();
 
-  data() {
-    return {
-      isDropdownOpen: false,
-    };
-  },
+const isDropdownOpen = ref(false);
 
-  computed: {
-    ...mapState(useAuth, ['isLoggedIn', 'email']),
+function handleLogout() {
+  isDropdownOpen.value = false;
+  logout();
 
-    getRandomColor() {
-      // generate random hex color
-      const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+  router.push({ name: 'home' });
+}
 
-      return randomColor;
-    },
-  },
+function closeDropdown() {
+  isDropdownOpen.value = false;
+}
 
-  methods: {
-    ...mapActions(useAuth, ['logout']),
-
-    handleLogout() {
-      this.isDropdownOpen = false;
-      this.logout();
-
-      this.$router.push({ name: 'home' });
-    },
-
-    closeDropdown() {
-      this.isDropdownOpen = false;
-    },
-  },
+const getRandomColor = computed(() => {
+  return Math.floor(Math.random() * 16777215).toString(16);
 });
 </script>

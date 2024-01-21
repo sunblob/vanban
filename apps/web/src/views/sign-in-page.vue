@@ -4,31 +4,25 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapActions } from 'pinia';
+<script setup lang="ts">
+import { useRouter } from 'vue-router';
 import { toast } from 'vue-sonner';
 import { useAuth } from '@/stores/auth';
 
 import SignInForm from '@/components/forms/sign-in-form.vue';
 
-export default defineComponent({
-  components: { SignInForm },
+const { login } = useAuth();
+const router = useRouter();
 
-  methods: {
-    ...mapActions(useAuth, ['login']),
-
-    async handleSubmit({ email, password }: { email: string; password: string }) {
-      try {
-        await this.login(email, password);
-        this.$router.push({ name: 'boards' });
-      } catch (err) {
-        console.log(err);
-        toast.error('Invalid credentials');
-      }
-    },
-  },
-});
+async function handleSubmit({ email, password }: { email: string; password: string }) {
+  try {
+    await login(email, password);
+    router.push({ name: 'boards' });
+  } catch (err) {
+    console.log(err);
+    toast.error('Invalid credentials');
+  }
+}
 </script>
 
 <style scoped></style>
