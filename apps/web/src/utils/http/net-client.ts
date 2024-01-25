@@ -1,4 +1,4 @@
-import { BACKEND_URL } from '@/constants';
+import { BACKEND_URL } from '../constants';
 import axios, { AxiosError, type AxiosRequestConfig } from 'axios';
 
 const AxiosInstance = axios.create({

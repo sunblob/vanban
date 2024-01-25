@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { toast } from 'vue-sonner';
 import axios from 'axios';
 import { useAuth } from './auth';
-import { BACKEND_URL } from '@/constants';
+import { BACKEND_URL } from '@/utils/constants';
 import type { Card } from '@/types';
 
 export const useList = defineStore('list', {

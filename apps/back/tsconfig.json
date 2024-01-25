@@ -2,7 +2,6 @@
   "compilerOptions": {
     "strict": true,
     "jsx": "react-jsx",
-    "target": "ESNext",
     "jsxImportSource": "hono/jsx",
     "baseUrl": ".",
     "paths": {

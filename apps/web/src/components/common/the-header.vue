@@ -40,11 +40,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
 import { useAuth } from '@/stores/auth';
 import VPopover from '../ui/popover/v-popover.vue';
 import VButton from '../ui/v-button.vue';
 
-const { logout, isLoggedIn, email } = useAuth();
+const { logout, isLoggedIn, email } = storeToRefs(useAuth());
 const router = useRouter();
 
 const isDropdownOpen = ref(false);

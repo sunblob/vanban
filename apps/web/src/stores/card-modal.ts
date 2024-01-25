@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { useAuth } from './auth';
-import { NetClient } from '@/http/net-client';
+import { NetClient } from '@/utils/http/net-client';
 import type { CardWithList } from '@/types';
 
 interface CardModalStore {

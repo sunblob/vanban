@@ -1,3 +1,8 @@
+export type AuthResponse = {
+  accessToken: string;
+  email: string;
+};
+
 export interface Workspace {
   id: string;
   title: string;

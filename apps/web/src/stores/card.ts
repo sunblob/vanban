@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { useAuth } from './auth';
 import axios from 'axios';
-import { BACKEND_URL } from '@/constants';
+import { BACKEND_URL } from '@/utils/constants';
 import { toast } from 'vue-sonner';
 import type { Card } from '@/types';
 

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { toast } from 'vue-sonner';
 import { useAuth } from './auth';
-import { NetClient } from '@/http/net-client';
+import { NetClient } from '@/utils/http/net-client';
 import type { Board } from '@/types';
 
 interface BoardStore {
@@ -46,6 +46,9 @@ export const useBoardStore = defineStore('board', {
       }
     },
 
+    // директория для сущности items
+    // 2 стейта список и текущий
+    // в первом
     async createBoard({
       title,
       image,
