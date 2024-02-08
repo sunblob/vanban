@@ -39,97 +39,87 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { defineComponent, ref } from 'vue';
 import { XIcon } from 'lucide-vue-next';
-import { mapActions } from 'pinia';
 
-import { useBoardStore } from '@/stores/board';
+import { useBoardActions } from '@/features/board/actions-state';
 
 import VButton from '@/components/ui/v-button.vue';
+import { useRouter } from 'vue-router';
 
-export default defineComponent({
-  components: {
-    XIcon,
-    VButton,
+const { createBoard } = useBoardActions();
+
+const router = useRouter();
+
+const title = ref('');
+const selectedImage = ref(1);
+const images = ref([
+  {
+    id: 1,
+    image: '/images/desert.jpg',
+    imagePreview: '/images/desert-preview.jpg',
   },
-
-  data() {
-    return {
-      title: '',
-      selectedImage: 1,
-      images: [
-        {
-          id: 1,
-          image: '/images/desert.jpg',
-          imagePreview: '/images/desert-preview.jpg',
-        },
-        {
-          id: 2,
-          image: '/images/tree.jpg',
-          imagePreview: '/images/tree-preview.jpg',
-        },
-        {
-          id: 3,
-          image: '/images/tree-desert.jpg',
-          imagePreview: '/images/tree-desert-preview.jpg',
-        },
-        {
-          id: 4,
-          image: '/images/lake.jpg',
-          imagePreview: '/images/lake-preview.jpg',
-        },
-        {
-          id: 5,
-          image: '/images/mountain-lake.jpg',
-          imagePreview: '/images/mountain-lake-preview.jpg',
-        },
-        {
-          id: 6,
-          image: '/images/mountain.jpg',
-          imagePreview: '/images/mountain-preview.jpg',
-        },
-        {
-          id: 7,
-          image: '/images/pagoda.jpg',
-          imagePreview: '/images/pagoda-preview.jpg',
-        },
-        {
-          id: 8,
-          image: '/images/fuji.jpg',
-          imagePreview: '/images/fuji-preview.jpg',
-        },
-      ],
-    };
+  {
+    id: 2,
+    image: '/images/tree.jpg',
+    imagePreview: '/images/tree-preview.jpg',
   },
-
-  methods: {
-    ...mapActions(useBoardStore, ['createBoard']),
-    close() {
-      this.$router.push({ name: 'boards' });
-    },
-
-    selectImage(imageId: number) {
-      console.log(imageId);
-
-      this.selectedImage = imageId;
-    },
-
-    create() {
-      const image = this.images.find((image) => image.id === this.selectedImage);
-
-      if (image) {
-        this.createBoard({
-          title: this.title,
-          image: image.image,
-          previewImage: image.imagePreview,
-        });
-
-        this.close();
-      }
-    },
+  {
+    id: 3,
+    image: '/images/tree-desert.jpg',
+    imagePreview: '/images/tree-desert-preview.jpg',
   },
-});
+  {
+    id: 4,
+    image: '/images/lake.jpg',
+    imagePreview: '/images/lake-preview.jpg',
+  },
+  {
+    id: 5,
+    image: '/images/mountain-lake.jpg',
+    imagePreview: '/images/mountain-lake-preview.jpg',
+  },
+  {
+    id: 6,
+    image: '/images/mountain.jpg',
+    imagePreview: '/images/mountain-preview.jpg',
+  },
+  {
+    id: 7,
+    image: '/images/pagoda.jpg',
+    imagePreview: '/images/pagoda-preview.jpg',
+  },
+  {
+    id: 8,
+    image: '/images/fuji.jpg',
+    imagePreview: '/images/fuji-preview.jpg',
+  },
+]);
+
+function close() {
+  router.push({ name: 'boards' });
+}
+
+function selectImage(imageId: number) {
+  console.log(imageId);
+
+  selectedImage.value = imageId;
+}
+
+function create() {
+  const image = images.value.find((image) => image.id === selectedImage.value);
+
+  if (image) {
+    createBoard({
+      title: title.value,
+      image: image.image,
+      previewImage: image.imagePreview,
+    });
+
+    close();
+  }
+}
 </script>
 
 <style scoped></style>

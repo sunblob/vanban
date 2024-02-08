@@ -3,7 +3,7 @@
     class="h-[226px] flex flex-col justify-between rounded-md p-4 cursor-pointer bg-cover"
     :style="{
       backgroundImage: `url(${board.previewImage})`,
-      backgroundColor: `#${getRandomColor}`,
+      backgroundColor: `#${randomColor}`,
     }"
     @click.self="openBoard"
   >
@@ -20,69 +20,45 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from 'vue';
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { MoreHorizontalIcon } from 'lucide-vue-next';
-import { mapActions } from 'pinia';
 
-import { useBoardStore } from '@/stores/board';
+import { useBoardActions } from '@/features/board/actions-state';
 
 import VButton from './ui/v-button.vue';
 import VPopover from './ui/popover/v-popover.vue';
 
 import type { Board } from '@/types';
 
-export default defineComponent({
-  components: {
-    MoreHorizontalIcon,
-    VButton,
-    VPopover,
-  },
+const { board } = defineProps<{
+  board: Board;
+}>();
 
-  props: {
-    board: {
-      type: Object as PropType<Board>,
-      required: true,
-    },
-  },
+const { deleteBoard } = useBoardActions();
+const router = useRouter();
 
-  data() {
-    return {
-      isDropdownOpen: false,
-    };
-  },
+const isDropdownOpen = ref(false);
 
-  computed: {
-    getRandomColor() {
-      // generate random hex color
-      const randomColor = Math.floor(Math.random() * 16777215).toString(16);
-
-      return randomColor;
-    },
-  },
-
-  methods: {
-    ...mapActions(useBoardStore, ['deleteBoard']),
-
-    openDropdown() {
-      console.log('isDropdownOpen');
-
-      this.isDropdownOpen = true;
-    },
-
-    handleDelete() {
-      console.log('delete board');
-
-      this.deleteBoard(this.board.id);
-
-      this.isDropdownOpen = false;
-    },
-
-    openBoard() {
-      this.$router.push({ name: 'board-details', params: { id: this.board.id } });
-    },
-  },
+const randomColor = computed(() => {
+  // generate random hex color
+  return Math.floor(Math.random() * 16777215).toString(16);
 });
+
+function openBoard() {
+  router.push({ name: 'board-details', params: { id: board.id } });
+}
+
+function openDropdown() {
+  isDropdownOpen.value = true;
+}
+
+function handleDelete() {
+  deleteBoard(board.id);
+
+  isDropdownOpen.value = false;
+}
 </script>
 
 <style scoped></style>

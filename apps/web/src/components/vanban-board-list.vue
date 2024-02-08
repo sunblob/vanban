@@ -38,7 +38,7 @@
       </div>
     </div>
     <draggable
-      :list="list.cards"
+      v-model="listCards"
       group="cards"
       tag="ul"
       item-key="id"
@@ -49,23 +49,23 @@
     >
       <template #item="{ element: card }: { element: Card }">
         <li :data-id="card.id">
-          <vanban-board-card :card="card" @update-card-title="updateCardTitle" />
+          <vanban-board-card :card="card" />
         </li>
       </template>
     </draggable>
     <div
-      v-if="!isAddingTask"
+      v-if="!isAddingCard"
       role="button"
       class="text-gray-300 hover:bg-neutral-600/30 rounded-md p-2"
-      @click="addTask"
+      @click="addCard"
     >
-      + Add task
+      + Add card
     </div>
     <div v-else class="flex flex-col gap-y-2">
       <input
-        ref="newTask"
+        ref="cardInput"
         type="text"
-        v-model="taskTitle"
+        v-model="cardTitle"
         @focusout="cancelFocus"
         class="text-gray-300 bg-gray-700 px-2 focus-visible:outline-none focus-visible:ring w-full rounded p-2"
       />
@@ -77,166 +77,119 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from 'vue';
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useFocus } from '@vueuse/core';
 import { MoreHorizontalIcon, XIcon, CheckIcon } from 'lucide-vue-next';
 import Draggable from 'vuedraggable';
-
-import { mapActions } from 'pinia';
-
-import { useBoardStore } from '@/stores/board';
 
 import VanbanBoardCard from './vanban-board-card.vue';
 import VPopover from './ui/popover/v-popover.vue';
 import VButton from './ui/v-button.vue';
 
 import type { List, Card } from '@/types';
+import { useListActions } from '@/features/list/actions-state';
+import { useCardActions } from '@/features/card/actions-state';
 
-export default defineComponent({
-  name: 'vanban-board-list',
+const { list } = defineProps<{
+  list: List;
+}>();
 
-  components: {
-    MoreHorizontalIcon,
-    XIcon,
-    CheckIcon,
-    VanbanBoardCard,
-    Draggable,
-    VPopover,
-    VButton,
-  },
+const { updateList, copyList, deleteList } = useListActions();
+const { createCard, reorderCard } = useCardActions();
 
-  emits: ['update-list-title', 'create-task', 'update-task-title'],
+const listCards = ref(list.cards);
 
-  props: {
-    list: {
-      type: Object as PropType<List>,
-      required: true,
-    },
-  },
+const isEditing = ref(false);
+const isAddingCard = ref(false);
+const cardTitle = ref('');
+const isDropdownOpen = ref(false);
 
-  data() {
-    return {
-      isEditing: false,
-      isAddingTask: false,
-      taskTitle: '',
-      isDropdownOpen: false,
-    };
-  },
+const cardInput = ref(null);
+const { focused } = useFocus(cardInput);
 
-  methods: {
-    ...mapActions(useBoardStore, [
-      'createCard',
-      'updateCardPosition',
-      'deleteList',
-      'copyList',
-      'updateList',
-    ]),
+function addCard() {
+  isAddingCard.value = true;
 
-    addTask() {
-      this.isAddingTask = true;
+  focused.value = true;
+}
+function editTitle() {
+  isEditing.value = true;
 
-      // next tick because otherwise ref is undefined
-      this.$nextTick(() => {
-        (this.$refs['newTask'] as HTMLInputElement).focus();
-      });
-    },
+  focused.value = true;
+}
 
-    editTitle() {
-      this.isEditing = true;
+function updateTitle(event: Event) {
+  const newTitle = (event.target as HTMLInputElement).value;
 
-      // next tick because otherwise ref is undefined
-      this.$nextTick(() => {
-        (this.$refs['titleInput'] as HTMLInputElement).focus();
-        (this.$refs['titleInput'] as HTMLInputElement).select();
-      });
-    },
+  // if new title is empty or the same it was before we dont want to trigger emit
+  if (newTitle === '' || newTitle === list.title) {
+    isEditing.value = false;
+    return;
+  }
 
-    updateTitle(event: Event) {
-      const newTitle = (event.target as HTMLInputElement).value;
+  updateList({ id: list.id, title: newTitle });
 
-      // if new title is empty or the same it was before we dont want to trigger emit
-      if (newTitle === '' || newTitle === this.list.title) {
-        this.isEditing = false;
-        return;
-      }
+  isEditing.value = false;
+}
 
-      this.updateList(this.list.id, newTitle);
+function confirm() {
+  if (cardTitle.value) {
+    createCard({
+      listId: list.id,
+      title: cardTitle.value,
+      position: list.cards.length,
+    });
 
-      this.$emit('update-list-title', { listId: this.list.id, title: newTitle });
+    isAddingCard.value = false;
+    cardTitle.value = '';
+  }
+}
 
-      this.isEditing = false;
-    },
+function cancelFocus() {
+  if (!cardTitle.value) {
+    isAddingCard.value = false;
+  }
+}
 
-    updateCardTitle({ taskId, title }: { taskId: string; title: string }) {
-      this.$emit('update-task-title', { taskId, title });
-    },
+function cancel() {
+  isAddingCard.value = false;
+  cardTitle.value = '';
+}
 
-    confirm() {
-      if (this.taskTitle) {
-        this.$emit('create-task', {
-          listId: this.list.id,
-          title: this.taskTitle,
-        });
+function move(event: any) {
+  const fromListId = event.from.dataset.id;
+  const toListId = event.to.dataset.id;
+  const newPosition = event.newIndex;
+  const cardId = event.item.dataset.id;
 
-        this.createCard({
-          listId: this.list.id,
-          title: this.taskTitle,
-          position: this.list.cards.length,
-        });
+  if (fromListId === toListId && newPosition === event.oldIndex) {
+    return;
+  }
 
-        this.isAddingTask = false;
-        this.taskTitle = '';
-      }
-    },
+  if (fromListId === toListId) {
+    reorderCard({
+      listId: fromListId,
+      cardId,
+      newPosition,
+    });
+  } else {
+    reorderCard({
+      listId: fromListId,
+      cardId,
+      newPosition,
+      newListId: toListId,
+    });
+  }
+}
 
-    cancelFocus() {
-      if (!this.taskTitle) {
-        this.isAddingTask = false;
-      }
-    },
+function copy() {
+  isDropdownOpen.value = false;
 
-    cancel() {
-      this.isAddingTask = false;
-      this.taskTitle = '';
-    },
+  copyList(list.id);
+}
 
-    move(event: any) {
-      const fromListId = event.from.dataset.id;
-      const toListId = event.to.dataset.id;
-      const newPosition = event.newIndex;
-      const cardId = event.item.dataset.id;
-
-      if (fromListId === toListId && newPosition === event.oldIndex) {
-        return;
-      }
-
-      if (fromListId === toListId) {
-        this.updateCardPosition({
-          listId: fromListId,
-          cardId,
-          newPosition,
-        });
-      } else {
-        this.updateCardPosition({
-          listId: fromListId,
-          cardId,
-          newPosition,
-          newListId: toListId,
-        });
-      }
-    },
-
-    copy() {
-      this.isDropdownOpen = false;
-
-      this.copyList(this.list.id);
-    },
-
-    handleDelete() {
-      this.deleteList(this.list.id);
-    },
-  },
-});
+function handleDelete() {
+  deleteList(list.id);
+}
 </script>
-
-<style scoped></style>

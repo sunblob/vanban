@@ -12,27 +12,15 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from 'vue';
+<script setup lang="ts">
 import { PlusCircleIcon } from 'lucide-vue-next';
 import { RouterLink } from 'vue-router';
 import type { Board } from '@/types';
 import BoardItem from './board-item.vue';
 
-export default defineComponent({
-  components: {
-    BoardItem,
-    PlusCircleIcon,
-    RouterLink,
-  },
-
-  props: {
-    boards: {
-      type: Array as PropType<Board[]>,
-      default: () => [],
-    },
-  },
-});
+const { boards } = defineProps<{
+  boards: Board[];
+}>();
 </script>
 
 <style scoped></style>

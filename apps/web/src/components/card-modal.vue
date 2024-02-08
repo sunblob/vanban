@@ -66,91 +66,86 @@
   </v-modal>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapState, mapActions } from 'pinia';
+<script setup lang="ts">
+import { computed, ref, watch, watchEffect } from 'vue';
 import { LayoutIcon, AlignLeftIcon, TrashIcon, CopyIcon } from 'lucide-vue-next';
+import { useQuery } from '@tanstack/vue-query';
+
 import { useCardModal } from '@/stores/card-modal';
-import { useBoardStore } from '@/stores/board';
+import { useCardActions } from '@/features/card/actions-state';
+
 import VModal from './ui/modal/v-modal.vue';
 import VButton from './ui/v-button.vue';
 
-export default defineComponent({
-  components: {
-    VModal,
-    LayoutIcon,
-    AlignLeftIcon,
-    TrashIcon,
-    CopyIcon,
-    VButton,
-  },
+import type { CardWithList } from '@/types';
+import { CardsApi } from '@/utils/api/cards';
 
-  props: {
-    isOpen: {
-      type: Boolean,
-      default: false,
-    },
-  },
+const props = defineProps<{
+  isOpen: boolean;
+}>();
 
-  data() {
-    return {
-      isEditingDescription: false,
-      title: '',
-      description: '',
-    };
-  },
+const store = useCardModal();
+const cardId = computed(() => store.id);
+const isEnabled = computed(() => props.isOpen);
 
-  computed: {
-    ...mapState(useCardModal, ['id', 'isCardOpen', 'card']),
-  },
-
-  methods: {
-    ...mapActions(useCardModal, ['close', 'loadCardInfo']),
-    ...mapActions(useBoardStore, ['deleteCard', 'copyCard', 'updateCard']),
-
-    handleCopy() {
-      this.close();
-
-      this.copyCard(this.id!);
-    },
-
-    handleDelete() {
-      this.deleteCard(this.id!);
-
-      this.close();
-    },
-
-    handleUpdateTitle() {
-      if (this.title === this.card?.title) return;
-
-      this.updateCard({
-        id: this.id!,
-        title: this.card!.title,
-      });
-    },
-
-    handleSave() {
-      this.isEditingDescription = false;
-
-      this.updateCard({
-        id: this.id!,
-        description: this.card!.description,
-      });
-    },
-
-    handleCLose() {
-      this.isEditingDescription = false;
-
-      this.close();
-    },
-  },
-
-  watch: {
-    id() {
-      this.loadCardInfo();
-    },
-  },
+const { data } = useQuery({
+  queryKey: ['card', cardId],
+  queryFn: () => CardsApi.getCard(cardId.value!),
+  enabled: isEnabled,
 });
+
+const { copyCard, deleteCard, updateCard } = useCardActions();
+
+const isEditingDescription = ref(false);
+const card = ref<CardWithList | null>(null);
+
+watchEffect(() => {
+  if (data.value) {
+    card.value = data.value;
+  }
+});
+
+function handleCopy() {
+  store.close();
+
+  if (card.value) {
+    copyCard(card.value.id);
+  }
+}
+
+function handleDelete() {
+  if (card.value) {
+    deleteCard(card.value.id);
+  }
+
+  store.close();
+}
+
+function handleUpdateTitle() {
+  if (card.value) {
+    updateCard({
+      id: card.value.id,
+      title: card.value.title,
+    });
+  }
+}
+
+function handleSave() {
+  isEditingDescription.value = false;
+
+  if (card.value) {
+    updateCard({
+      id: card.value.id,
+      description: card.value.description,
+    });
+  }
+}
+
+function handleCLose() {
+  isEditingDescription.value = false;
+
+  store.close();
+}
 </script>
 
 <style scoped></style>

@@ -1,6 +1,6 @@
+import type { AxiosResponse } from 'axios';
 import type { AuthResponse } from '@/types';
 import { NetClient } from '../http/net-client';
-import type { AxiosResponse } from 'axios';
 
 export class AuthApi {
   static async login(email: string, password: string): Promise<AxiosResponse<AuthResponse>> {

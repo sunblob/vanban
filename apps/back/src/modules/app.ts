@@ -14,6 +14,7 @@ import { listRouter } from './list';
 import { cardRouter } from './card';
 import { logsRouter } from './logs';
 import { auth, getUser } from '../middlewares/auth';
+import { HttpError } from '@/utils/http-error';
 
 const app = new Hono();
 
@@ -41,6 +42,12 @@ app.notFound((c) => {
 
 app.onError((err, c) => {
   let message = 'Internal server error';
+  let reason = 'INTERNAL_SERVER_ERROR';
+
+  if (err instanceof HttpError) {
+    message = err.message;
+    reason = err.reason;
+  }
 
   if (err instanceof HTTPException) {
     message = err.message;
@@ -50,9 +57,7 @@ app.onError((err, c) => {
     message = err.message;
   }
 
-  console.log('Error: ', err);
-
-  return c.json({ error: err.message }, 500);
+  return c.json({ error: message, reason }, 500);
 });
 
 showRoutes(app);

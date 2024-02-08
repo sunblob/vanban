@@ -5,29 +5,12 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapActions, mapState } from 'pinia';
-import { useBoardStore } from '@/stores/board';
+<script setup lang="ts">
+import { useBoards } from '@/features/board/list-state';
+
 import BoardItemList from '@/components/board-item-list.vue';
 
-export default defineComponent({
-  components: {
-    BoardItemList,
-  },
-
-  computed: {
-    ...mapState(useBoardStore, ['boards']),
-  },
-
-  methods: {
-    ...mapActions(useBoardStore, ['getBoards']),
-  },
-
-  mounted() {
-    this.getBoards();
-  },
-});
+const { data: boards } = useBoards();
 </script>
 
 <style scoped></style>

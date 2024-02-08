@@ -1,7 +1,7 @@
 <template>
   <div
     class="flex flex-col gap-y-1 px-2 py-2 rounded-md bg-gray-400 cursor-pointer hover:bg-gray-400/90 group"
-    @click="open(card.id)"
+    @click="modalStore.open(card.id)"
   >
     <div v-if="card.tags && card.tags.length" class="inline-flex gap-x-1">
       <span
@@ -16,8 +16,8 @@
       ></span>
     </div>
     <div class="flex items-center justify-between gap-x-2">
-      <h3 v-if="!isEditing">{{ card.title }}</h3>
-      <div v-else class="w-full">
+      <h3 v-show="!isEditing">{{ card.title }}</h3>
+      <div v-show="isEditing" class="w-full">
         <textarea
           ref="titleInput"
           class="w-full resize-none focus-visible:outline-none focus-visible:ring rounded bg-gray-500/50"
@@ -39,80 +39,65 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from 'vue';
-import { mapActions } from 'pinia';
-import { Clock3Icon as ClockIcon, PencilLineIcon, XIcon } from 'lucide-vue-next';
+<script setup lang="ts">
+import { ref, nextTick } from 'vue';
+import { PencilLineIcon, XIcon } from 'lucide-vue-next';
+import { onClickOutside } from '@vueuse/core';
+import { useFocus } from '@vueuse/core';
 
 import { useCardModal } from '@/stores/card-modal';
-import { useBoardStore } from '@/stores/board';
+import { useCardActions } from '@/features/card/actions-state';
 
 import VButton from './ui/v-button.vue';
 
 import type { Card } from '@/types';
 
-export default defineComponent({
-  name: 'vanban-board-card',
+const props = defineProps<{
+  card: Card;
+}>();
 
-  components: { PencilLineIcon, XIcon, VButton },
+const { updateCard } = useCardActions();
+const modalStore = useCardModal();
 
-  props: {
-    card: {
-      type: Object as PropType<Card>,
-      required: true,
-    },
-  },
+const titleInput = ref<HTMLInputElement | null>(null);
+const isEditing = ref(false);
+const title = ref('');
 
-  data() {
-    return {
-      isModalOpen: false,
-      isEditing: false,
-      title: '',
-    };
-  },
+const { focused } = useFocus(titleInput);
 
-  emits: ['update-card-title'],
-
-  methods: {
-    ...mapActions(useCardModal, ['open']),
-    ...mapActions(useBoardStore, ['updateCard']),
-
-    editTitle() {
-      this.isEditing = true;
-
-      this.$nextTick(() => {
-        (this.$refs['titleInput'] as HTMLInputElement).focus();
-        (this.$refs['titleInput'] as HTMLInputElement).select();
-      });
-    },
-
-    closeEdit() {
-      this.isEditing = false;
-    },
-
-    updateTitle() {
-      this.isEditing = false;
-
-      if (this.title === this.card.title) {
-        return;
-      }
-
-      this.updateCard({
-        id: this.card.id,
-        title: this.title,
-      });
-
-      this.$emit('update-card-title', {
-        taskId: this.card.id,
-        title: this.title,
-      });
-    },
-  },
-
-  mounted() {
-    this.title = this.card.title;
-  },
+onClickOutside(titleInput, () => {
+  isEditing.value = false;
 });
-</script>
 
-<style scoped></style>
+function editTitle() {
+  isEditing.value = true;
+
+  title.value = props.card.title;
+
+  focused.value = true;
+
+  console.log('focused: ', focused.value, titleInput);
+
+  // this.$nextTick(() => {
+  //   (this.$refs['titleInput'] as HTMLInputElement).focus();
+  //   (this.$refs['titleInput'] as HTMLInputElement).select();
+  // });
+}
+
+function closeEdit() {
+  isEditing.value = false;
+}
+
+function updateTitle() {
+  isEditing.value = false;
+
+  if (title.value === props.card.title) {
+    return;
+  }
+
+  updateCard({
+    id: props.card.id,
+    title: title.value,
+  });
+}
+</script>

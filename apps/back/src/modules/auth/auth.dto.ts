@@ -6,3 +6,9 @@ export const authDto = z.object({
 });
 
 export type AuthDto = z.infer<typeof authDto>;
+
+export const refreshDto = z.object({
+  refreshToken: z.string(),
+});
+
+export type RefreshDto = z.infer<typeof refreshDto>;

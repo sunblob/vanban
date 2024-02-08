@@ -13,7 +13,7 @@ boardRouter.get('/', auth(), async (c) => {
   return c.json(boards);
 });
 
-boardRouter.get('/:id', async (c) => {
+boardRouter.get('/:id', auth(), async (c) => {
   const userId = getUser(c);
   const boardId = c.req.param('id');
 

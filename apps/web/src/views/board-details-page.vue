@@ -1,46 +1,15 @@
 <template>
-  <vanban-board v-if="currentBoard" :board="currentBoard" @delete-board="handleDeleteBoard" />
+  <vanban-board v-if="currentBoard" :board="currentBoard" />
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapActions, mapState } from 'pinia';
+<script setup lang="ts">
+import { toRef } from 'vue';
+
+import { useBoard } from '@/features/board/item-state';
+
 import VanbanBoard from '@/components/vanban-board.vue';
-import { useBoardStore } from '@/stores/board';
 
-export default defineComponent({
-  components: {
-    VanbanBoard,
-  },
+const props = defineProps<{ id: string }>();
 
-  props: {
-    id: {
-      type: String,
-      required: true,
-    },
-  },
-
-  computed: {
-    ...mapState(useBoardStore, ['currentBoard']),
-  },
-
-  methods: {
-    ...mapActions(useBoardStore, ['getBoard', 'deleteBoard']),
-
-    handleDeleteBoard(id: string) {
-      this.$router.push({ name: 'boards' });
-      this.deleteBoard(id);
-    },
-  },
-
-  watch: {
-    id() {
-      this.getBoard(this.id);
-    },
-  },
-
-  mounted() {
-    this.getBoard(this.id);
-  },
-});
+const { data: currentBoard } = useBoard(toRef(props.id));
 </script>
