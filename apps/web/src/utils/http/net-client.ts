@@ -16,26 +16,26 @@ AxiosInstance.interceptors.request.use(
   },
 );
 
-AxiosInstance.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-    if (error instanceof AxiosError) {
-      if (error.response?.data.reason === 'TOKEN_EXPIRED') {
-        const res = await AxiosInstance.post('/api/auth/refresh-token', {
-          refreshToken: localStorage.getItem('refreshToken'),
-        });
+// AxiosInstance.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
+//     if (error instanceof AxiosError) {
+//       if (error.response?.data.reason === 'TOKEN_EXPIRED') {
+//         const res = await AxiosInstance.post('/api/auth/refresh-token', {
+//           refreshToken: localStorage.getItem('refreshToken'),
+//         });
 
-        localStorage.setItem('token', res.data.token);
-        localStorage.setItem('refreshToken', res.data.refreshToken);
+//         localStorage.setItem('token', res.data.token);
+//         localStorage.setItem('refreshToken', res.data.refreshToken);
 
-        return AxiosInstance.request(originalRequest);
-      }
-    }
+//         return AxiosInstance.request(originalRequest);
+//       }
+//     }
 
-    return Promise.reject(error);
-  },
-);
+//     return Promise.reject(error);
+//   },
+// );
 
 export class NetClient {
   static async request<T>(config: AxiosRequestConfig) {

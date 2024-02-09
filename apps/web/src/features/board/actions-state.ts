@@ -18,6 +18,7 @@ export const useBoardActions = () => {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['boards'] });
       await queryClient.invalidateQueries({ queryKey: ['board'] });
+      toast.success('Board created');
     },
     onError: () => {
       toast.error('Failed to create new board');
@@ -39,8 +40,6 @@ export const useBoardActions = () => {
   const { mutate: deleteBoard } = useMutation({
     mutationFn: (id: string) => BoardsApi.deleteBoard(id),
     onSuccess: async () => {
-      console.log('deleteBoard success');
-
       await queryClient.invalidateQueries({ queryKey: ['boards'] });
       await queryClient.invalidateQueries({ queryKey: ['board'] });
     },
