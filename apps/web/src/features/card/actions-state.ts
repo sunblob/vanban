@@ -1,6 +1,5 @@
 import { CardsApi } from '@/utils/api/cards';
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
-import { ref } from 'vue';
 import { toast } from 'vue-sonner';
 
 export const useCardActions = () => {
