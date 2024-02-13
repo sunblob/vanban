@@ -1,27 +1,12 @@
 <template>
-  <card-modal :is-open="isCardOpen" />
-  <board-lightbox :is-open="isBoxOpen" />
+  <card-modal :is-open="store.isCardOpen" />
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapState } from 'pinia';
-import { useBoardBox } from '@/stores/board-box';
+<script setup lang="ts">
 import { useCardModal } from '@/stores/card-modal';
 import CardModal from './card-modal.vue';
-import BoardLightbox from './board-lightbox.vue';
 
-export default defineComponent({
-  components: {
-    CardModal,
-    BoardLightbox,
-  },
-
-  computed: {
-    ...mapState(useBoardBox, ['isBoxOpen']),
-    ...mapState(useCardModal, ['isCardOpen']),
-  },
-});
+const store = useCardModal();
 </script>
 
 <style scoped></style>

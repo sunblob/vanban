@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  web:
+    container_name: vanban_web
+    build: ./apps/web
+    ports:
+      - '5000:5000'
+    depends_on:
+      - db
+  back:
+    container_name: vanban_back
+    build: ./apps/back
+    ports:
+      - '5001:5001'
+    depends_on:
+      - db
+  db:
+    container_name: vanban_db
+    image: postgres
+    environment:
+      POSTGRES_DB: vanban
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres

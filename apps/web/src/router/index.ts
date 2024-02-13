@@ -39,7 +39,7 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach((to, from) => {
+router.beforeEach((to) => {
   const { isLoggedIn } = useAuth();
 
   if (!isLoggedIn && to.name != 'sign-in' && to.name != 'home' && to.name != 'sign-up') {

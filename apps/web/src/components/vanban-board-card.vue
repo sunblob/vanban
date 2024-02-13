@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick } from 'vue';
+import { ref } from 'vue';
 import { PencilLineIcon, XIcon } from 'lucide-vue-next';
 import { onClickOutside } from '@vueuse/core';
 import { useFocus } from '@vueuse/core';

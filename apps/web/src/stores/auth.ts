@@ -7,10 +7,10 @@ import { EMAIL_KEY, REFRESH_TOKEN_KEY, TOKEN_KEY } from '@/utils/constants';
 import { AuthApi } from '@/utils/api/auth';
 import { AxiosError } from 'axios';
 
-interface AuthStore {
-  token: string | null;
-  email: string | null;
-}
+// interface AuthStore {
+//   token: string | null;
+//   email: string | null;
+// }
 
 export const useAuth = defineStore('auth', () => {
   const router = useRouter();

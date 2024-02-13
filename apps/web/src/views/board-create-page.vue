@@ -40,13 +40,13 @@
 </template>
 
 <script setup lang="ts">
-import { defineComponent, ref } from 'vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { XIcon } from 'lucide-vue-next';
 
 import { useBoardActions } from '@/features/board/actions-state';
 
 import VButton from '@/components/ui/v-button.vue';
-import { useRouter } from 'vue-router';
 
 const { createBoard } = useBoardActions();
 

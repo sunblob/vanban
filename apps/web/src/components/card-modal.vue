@@ -67,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { LayoutIcon, AlignLeftIcon, TrashIcon, CopyIcon } from 'lucide-vue-next';
 import { useQuery } from '@tanstack/vue-query';
 
