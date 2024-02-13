@@ -29,7 +29,7 @@
             @close="closeDropdown"
             class="top-4 right-0"
           >
-            <v-button size="sm" variant="danger" @click="handleLogout"> Logout </v-button>
+            <v-button size="sm" variant="destructive" @click="handleLogout"> Logout </v-button>
           </v-popover>
         </div>
       </div>
@@ -44,7 +44,7 @@ import { RouterLink, useRouter } from 'vue-router';
 import { useAuth } from '@/stores/auth';
 
 import VPopover from '../ui/popover/v-popover.vue';
-import VButton from '../ui/v-button.vue';
+import VButton from '../ui/button/v-button.vue';
 
 const auth = useAuth();
 const router = useRouter();

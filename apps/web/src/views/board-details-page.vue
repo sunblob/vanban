@@ -7,7 +7,7 @@ import { toRef } from 'vue';
 
 import { useBoard } from '@/features/board/item-state';
 
-import VanbanBoard from '@/components/vanban-board.vue';
+import VanbanBoard from '@/components/vanban/vanban-board.vue';
 
 const props = defineProps<{ id: string }>();
 

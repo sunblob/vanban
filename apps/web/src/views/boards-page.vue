@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import { useBoards } from '@/features/board/list-state';
 
-import BoardItemList from '@/components/board-item-list.vue';
+import BoardItemList from '@/components/board/board-item-list.vue';
 
 const { data: boards } = useBoards();
 </script>

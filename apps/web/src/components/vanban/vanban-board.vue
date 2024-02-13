@@ -62,7 +62,7 @@ import { useListActions } from '@/features/list/actions-state';
 
 import VanbanBoardList from './vanban-board-list.vue';
 import VanbanBoardHeader from './vanban-board-header.vue';
-import VButton from './ui/v-button.vue';
+import VButton from '../ui/v-button.vue';
 
 import type { List, Board } from '@/types';
 

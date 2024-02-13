@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick } from 'vue';
+import { ref } from 'vue';
 import { PencilLineIcon, XIcon } from 'lucide-vue-next';
 import { onClickOutside } from '@vueuse/core';
 import { useFocus } from '@vueuse/core';
@@ -48,7 +48,7 @@ import { useFocus } from '@vueuse/core';
 import { useCardModal } from '@/stores/card-modal';
 import { useCardActions } from '@/features/card/actions-state';
 
-import VButton from './ui/v-button.vue';
+import VButton from '../ui/v-button.vue';
 
 import type { Card } from '@/types';
 
