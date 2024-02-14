@@ -62,7 +62,26 @@ export const useAuth = defineStore('auth', () => {
     await router.replace({ name: 'home' });
   }
 
-  return { accessToken, refreshToken, email, isLoggedIn, register, login, logout };
+  async function checkToken() {
+    try {
+      const { data } = await AuthApi.checkToken(accessToken.value);
+
+      if (data) {
+        router.replace({ name: 'boards' });
+      }
+    } catch (error) {
+      accessToken.value = null;
+      refreshToken.value = null;
+      email.value = null;
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(EMAIL_KEY);
+      localStorage.removeItem(REFRESH_TOKEN_KEY);
+
+      router.replace({ name: 'sign-in' });
+    }
+  }
+
+  return { accessToken, refreshToken, email, isLoggedIn, register, login, logout, checkToken };
 });
 
 // export const useAuth = defineStore('auth', {

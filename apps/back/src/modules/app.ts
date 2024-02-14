@@ -44,6 +44,8 @@ app.onError((err, c) => {
   let message = 'Internal server error';
   let reason = 'INTERNAL_SERVER_ERROR';
 
+  console.log('err: ', err);
+
   if (err instanceof HttpError) {
     message = err.message;
     reason = err.reason;

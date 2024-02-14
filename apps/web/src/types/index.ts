@@ -4,6 +4,10 @@ export type AuthResponse = {
   email: string;
 };
 
+export type MessageResponse = {
+  message: string;
+};
+
 export interface Workspace {
   id: string;
   title: string;

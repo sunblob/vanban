@@ -132,4 +132,26 @@ export class AuthService {
       email: user.email,
     };
   }
+
+  static async checkToken(token: string) {
+    try {
+      const decoded = await verify(token, process.env.JWT_SECRET, 'HS512');
+
+      if (!decoded) {
+        throw new HttpError(401, {
+          message: 'Invalid token',
+          reason: 'INVALID_TOKEN',
+        });
+      }
+
+      return {
+        message: 'Token is valid',
+      };
+    } catch (error) {
+      throw new HttpError(401, {
+        message: 'Invalid token',
+        reason: 'INVALID_TOKEN',
+      });
+    }
+  }
 }

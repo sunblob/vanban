@@ -12,3 +12,9 @@ export const refreshDto = z.object({
 });
 
 export type RefreshDto = z.infer<typeof refreshDto>;
+
+export const checkToken = z.object({
+  token: z.string(),
+});
+
+export type CheckTokenDto = z.infer<typeof checkToken>;

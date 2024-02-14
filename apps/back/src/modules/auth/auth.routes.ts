@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
-import { authDto, refreshDto } from './auth.dto';
+import { authDto, checkToken, refreshDto } from './auth.dto';
 import { AuthService } from './auth.service';
 import { auth } from '@/middlewares/auth';
 
@@ -22,10 +22,18 @@ authRouter.post('/register', zValidator('json', authDto), async (c) => {
   return c.json(result);
 });
 
-authRouter.post('/logout', auth, (c) => {
+authRouter.post('/logout', auth(), (c) => {
   return c.json({
     message: 'Successfully logged out',
   });
+});
+
+authRouter.post('/check-token', zValidator('json', checkToken), async (c) => {
+  const data = c.req.valid('json');
+
+  const result = await AuthService.checkToken(data.token);
+
+  return c.json(result);
 });
 
 authRouter.post('/refresh-token', zValidator('json', refreshDto), async (c) => {
