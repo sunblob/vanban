@@ -64,11 +64,9 @@ export const useAuth = defineStore('auth', () => {
 
   async function checkToken() {
     try {
-      const { data } = await AuthApi.checkToken(accessToken.value);
+      await AuthApi.checkToken(accessToken.value);
 
-      if (data) {
-        router.replace({ name: 'boards' });
-      }
+      router.replace({ name: 'boards' });
     } catch (error) {
       accessToken.value = null;
       refreshToken.value = null;
